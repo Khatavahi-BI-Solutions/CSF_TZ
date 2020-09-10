@@ -134,7 +134,8 @@ fixtures = [
 
 app_include_js = [
 	"/assets/js/select_dialog.min.js",
-	"/assets/js/v_page.min.js"
+	"/assets/js/v_page.min.js",
+	# "/assets/csf_tz/node_modules/primevue/organizationchart.js"
 	]
 
 # include js, css files in header of web template
