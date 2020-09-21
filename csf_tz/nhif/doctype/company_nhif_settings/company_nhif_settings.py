@@ -17,8 +17,7 @@ from csf_tz import console
 
 
 class CompanyNHIFSettings(Document):
-	def validate(self):
-		get_nhifservice_token(self.company)
+	pass
 
 
 def get_nhifservice_token(company):
