@@ -108,6 +108,11 @@ fixtures = [
 		"Student Applicant-bank_reference",
 		"Student Applicant-program_enrollment",
 		"Company-bypass_material_request_validation",
+		"Patient-insurance_details",
+		"Patient-insurance_company",
+		"Patient-column_break_2",
+		"Patient-card_no",
+		"Patient-allow_update_from_insurance",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Sales Invoice-pos_profile-in_standard_filter",
