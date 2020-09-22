@@ -17,7 +17,7 @@ from frappe.utils import  now, add_to_date, now_datetime
 
 def get_nhifservice_token(company):
 	setting_doc = frappe.get_doc("Company NHIF Settings", company)
-	if setting_doc.nhifservice_expiry > now_datetime():
+	if setting_doc.nhifservice_expiry and setting_doc.nhifservice_expiry > now_datetime():
 		return setting_doc.nhifservice_token 
 
 	username = setting_doc.username

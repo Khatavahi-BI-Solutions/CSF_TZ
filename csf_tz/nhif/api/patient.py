@@ -40,7 +40,6 @@ def get_token(doc, method):
                 console(card)
                 doc.patient_name = "{0} {1} {2}".format(card["FirstName"], card["MiddleName"], card["LastName"])
                 doc.sex = card["Gender"]
-                # doc.db_update()
                 return card
             else:
                 frappe.throw(json.loads(r.text))
