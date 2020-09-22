@@ -12,7 +12,7 @@ import json
 import requests
 from time import sleep
 from frappe.utils import  now, add_to_date, now_datetime
-from csf_tz import console
+# from csf_tz import console
 
 
 def get_nhifservice_token(company):

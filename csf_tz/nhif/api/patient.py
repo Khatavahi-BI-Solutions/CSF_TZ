@@ -7,11 +7,11 @@ import frappe
 from frappe import _
 from csf_tz.nhif.api.token import get_nhifservice_token
 from erpnext import get_company_currency, get_default_company
-from csf_tz import console
 import json
 import requests
 from time import sleep
 from frappe.utils import  now, add_to_date, now_datetime
+from csf_tz import console
 
 
 
@@ -19,9 +19,12 @@ from frappe.utils import  now, add_to_date, now_datetime
 def get_token(doc, method):
     if not doc.allow_update_from_insurance:
         return
+    if not doc.card_no:
+        frappe.msgprint(_("Please set Card No"))
+        return
     company = get_default_company()
     token = get_nhifservice_token(company)
-    console(token)
+    
     nhifservice_url = frappe.get_value("Company NHIF Settings", company, "nhifservice_url")
     headers = {
         "Authorization" : "Bearer " + token
@@ -33,8 +36,12 @@ def get_token(doc, method):
             r.raise_for_status()
             frappe.logger().debug({"webhook_success": r.text})
             if json.loads(r.text):
-                console(json.loads(r.text))
-                return json.loads(r.text)
+                card = json.loads(r.text)
+                console(card)
+                doc.patient_name = "{0} {1} {2}".format(card["FirstName"], card["MiddleName"], card["LastName"])
+                doc.sex = card["Gender"]
+                # doc.db_update()
+                return card
             else:
                 frappe.throw(json.loads(r.text))
         except Exception as e:
