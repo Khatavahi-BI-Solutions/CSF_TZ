@@ -11,12 +11,15 @@ from frappe.utils.password import get_decrypted_password
 import json
 import requests
 from time import sleep
-from frappe.utils import today, format_datetime, now, nowdate, getdate, get_url, get_host_name, add_to_date
+from frappe.utils import  now, add_to_date, now_datetime
 from csf_tz import console
 
 
 def get_nhifservice_token(company):
 	setting_doc = frappe.get_doc("Company NHIF Settings", company)
+	if setting_doc.nhifservice_expiry > now_datetime():
+		return setting_doc.nhifservice_token 
+
 	username = setting_doc.username
 	password = get_decrypted_password("Company NHIF Settings", company, "password")
 	payload = 'grant_type=password&username={0}&password={1}'.format(username, password)
@@ -32,11 +35,11 @@ def get_nhifservice_token(company):
 			frappe.logger().debug({"webhook_success": r.text})
 			if json.loads(r.text)["token_type"] == "bearer":
 				token = json.loads(r.text)["access_token"]
-				exoired = json.loads(r.text)["expires_in"]
+				expired = json.loads(r.text)["expires_in"]
+				expiry_date = add_to_date(now(),seconds= (expired - 1000))
 				setting_doc.nhifservice_token = token
+				setting_doc.nhifservice_expiry = expiry_date
 				setting_doc.db_update()
-				console(token)
-				console(exoired)
 				return token
 			else:
 				frappe.throw(json.loads(r.text))

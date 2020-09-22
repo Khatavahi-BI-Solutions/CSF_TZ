@@ -7,9 +7,11 @@ import frappe
 from frappe import _
 from csf_tz.nhif.api.token import get_nhifservice_token
 from erpnext import get_company_currency, get_default_company
+from csf_tz import console
 
 
 
 def get_token(doc, method):
-    get_nhifservice_token(get_default_company())
+    token = get_nhifservice_token(get_default_company())
+    console(token)
 
