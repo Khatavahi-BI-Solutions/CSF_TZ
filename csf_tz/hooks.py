@@ -297,7 +297,7 @@ doc_events = {
 		"on_update_after_submit":"csf_tz.csftz_hooks.student_applicant.make_student_applicant_fees",
 	},
 	"Patient": {
-		"validate":"csf_tz/csftz_hooks/patient.get_token",
+		"validate":"csf_tz.nhif.api.patient.get_token",
 	},
 	
 }
