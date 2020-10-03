@@ -1,7 +1,7 @@
 frappe.ui.form.on("Sales Invoice", {
     setup: function(frm) {
-
-        // frm.trigger("update_stock");
+        delete frm.events["customer"]
+        delete frm.cscript["customer"];
     },
     refresh: function(frm) {
         frm.trigger("set_pos");
@@ -19,49 +19,60 @@ frappe.ui.form.on("Sales Invoice", {
                 frm.set_value("select_print_heading","CREDIT NOTE");
             }
         }
-        // frm.trigger("update_stock");
     },  
-    customer: function(frm) {
-        setTimeout(function() {
+    customer: function (frm) {
+        if (frm.doc.is_pos) {
+            var pos_profile = this.frm.doc.pos_profile;
+        }
+        // if (frm.updating_party_details) return;
+        // erpnext.utils.get_party_details(frm,
+        //     "erpnext.accounts.party.get_party_details", {
+        //     posting_date: frm.doc.posting_date,
+        //     party: frm.doc.customer,
+        //     party_type: "Customer",
+        //     account: frm.doc.debit_to,
+        //     price_list: frm.doc.selling_price_list,
+        //     pos_profile: pos_profile
+        // }, function () {
+        //     frm.trigger("apply_pricing_rule");
+        // });
+
+        if (frm.doc.customer) {
+            frappe.call({
+                "method": "erpnext.accounts.doctype.sales_invoice.sales_invoice.get_loyalty_programs",
+                "args": {
+                    "customer": frm.doc.customer
+                },
+                callback: function (r) {
+                    if (r.message && r.message.length) {
+                        select_loyalty_program(frm, r.message);
+                    }
+                }
+            });
+        }
+        
+        setTimeout(function () {
             if (!frm.doc.customer) {
                 return
             }
-            if (!frm.doc.tax_category){
+            console.log("test")
+            if (!frm.doc.tax_category) {
                 frappe.call({
                     method: "csf_tz.custom_api.get_tax_category",
                     args: {
                         doc_type: frm.doc.doctype,
                         company: frm.doc.company,
                     },
-                    callback: function(r) {
-                        if(!r.exc) {
+                    callback: function (r) {
+                        if (!r.exc) {
                             frm.set_value("tax_category", r.message);
                             frm.trigger("tax_category");
                         }
                     }
-                });           
-        }
-          }, 1000);   
+                });
+            }
+        }, 1000);
     },
-    // update_stock: (frm) => {
-    //     const warehouse_field = frappe.meta.get_docfield("Sales Invoice Item", "warehouse", frm.doc.name);
-    //     const item_field = frappe.meta.get_docfield("Sales Invoice Item", "item_code", frm.doc.name);
-    //     const qty_field = frappe.meta.get_docfield("Sales Invoice Item", "qty", frm.doc.name);
-    //     if (frm.doc.update_stock){
-    //         warehouse_field.in_list_view = 1;
-    //         warehouse_field.idx = 3;
-    //         warehouse_field.columns = 2;
-    //         item_field.columns =3;
-    //         qty_field.columns =1;
-    //         refresh_field("items");
-    //     }else{
-    //         warehouse_field.in_list_view = 0;
-    //         warehouse_field.columns = 0;
-    //         item_field.columns =4;
-    //         qty_field.columns =2;
-    //         refresh_field("items");
-    //     }
-    // },
     make_sales_invoice_btn: function(frm){
         if (frm.doc.docstatus == 1 && frm.doc.enabled_auto_create_delivery_notes == 1){
             frm.add_custom_button(__('Create Delivery Note'),
