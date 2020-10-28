@@ -184,7 +184,10 @@ doctype_js = {
 	"Program Enrollment": "csf_tz/program_enrollment.js",
 	"Payroll Entry": "csf_tz/payroll_entry.js",
 	"Salary Slip": "csf_tz/salary_slip.js",
+	"Patient Appointment": "nhif/api/patient_appointment.js",
+	# "Patient Appointment": "csf_tz/patient_appointment.js",
 }
+#csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -303,8 +306,11 @@ doc_events = {
 	"Student Applicant": {
 		"on_update_after_submit":"csf_tz.csftz_hooks.student_applicant.make_student_applicant_fees",
 	},
+	"Patient Appointment": {
+		"onload":"csf_tz.nhif.api.patient_appointment.test",
+	},
 }
-
+# dev-bench/apps/csf_tz/csf_tz/nhif/api/patient_appointment.py
 # Scheduled Tasks
 # ---------------
 
