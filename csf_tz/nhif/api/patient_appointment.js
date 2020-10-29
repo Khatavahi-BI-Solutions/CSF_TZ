@@ -24,7 +24,11 @@ frappe.ui.form.on('Patient Appointment', {
         frm.trigger("mandatory_fields")
         if (frm.doc.mode_of_payment) {
             frm.set_value("insurance_subscription", "")
+            frm.trigger('get_default_paid_amount')
         }
+    },
+    practitioner: function (frm) {
+        frm.trigger("get_consulting_charge_item")
     },
     mandatory_fields: function (frm) {
         if (frm.doc.insurance_subscription) {
@@ -61,15 +65,40 @@ frappe.ui.form.on('Patient Appointment', {
     get_default_paid_amount: function (frm) {
         if (frm.doc.practitioner) {
             frappe.call({
-                method: 'frappe.client.get',
+                method: 'csf_tz.nhif.api.patient_appointment.get_consulting_charge_amount',
                 args: {
-                    doctype: 'Healthcare Practitioner',
-                    name: frm.doc.practitioner
+                    'appointment_type': frm.doc.appointment_type,
+                    'practitioner': frm.doc.practitioner,
                 },
                 callback: function (data) {
-                    frappe.model.set_value(frm.doctype, frm.docname, 'paid_amount', data.message.op_consulting_charge);
+                    if (data.message) {
+                        frm.set_value("paid_amount", data.message);
+                    }
+
                 }
             });
+        }
+    },
+    get_consulting_charge_item: function (frm) {
+        frappe.call({
+            method: 'csf_tz.nhif.api.patient_appointment.get_consulting_charge_item',
+            args: {
+                'appointment_type': frm.doc.appointment_type,
+                'practitioner': frm.doc.practitioner,
+            },
+            callback: function (data) {
+                if (data.message) {
+                    frm.set_value("billing_item", data.message)
+                }
+            }
+        });
+    },
+    patient: function (frm) {
+        if (frm.doc.patient) {
+            setTimeout(() => {
+                frm.toggle_display('mode_of_payment', 1);
+                frm.toggle_display('paid_amount', 1);
+            }, 100)
         }
     },
 })

@@ -6,9 +6,9 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 from csf_tz import console
-from erpnext.erpnext.Healthcare.doctype.patient_appointment.patient_appointment import get_appointment_item, check_is_new_patient
+from erpnext.healthcare.doctype.patient_appointment.patient_appointment import get_appointment_item, check_is_new_patient
 from erpnext.healthcare.doctype.healthcare_settings.healthcare_settings import get_receivable_account
-from erpnext.healthcare.utils import check_fee_validity
+from erpnext.healthcare.utils import check_fee_validity, get_service_item_and_practitioner_charge
 from frappe.utils import getdate
 
 
@@ -88,3 +88,23 @@ def invoice_appointment(appointment_doc, method):
                             appointment_doc.name, 'invoiced', 1)
         frappe.db.set_value('Patient Appointment', appointment_doc.name,
                             'ref_sales_invoice', sales_invoice.name)
+
+
+@frappe.whitelist()
+def get_consulting_charge_item(appointment_type, practitioner):
+    charge_item = ""
+    is_inpatient = frappe.get_value("Appointment Type", appointment_type, "ip")
+    field_name = "inpatient_visit_charge_item" if is_inpatient else "op_consulting_charge_item"
+    charge_item = frappe.get_value(
+        "Healthcare Practitioner", practitioner, field_name)
+    return charge_item
+
+
+@frappe.whitelist()
+def get_consulting_charge_amount(appointment_type, practitioner):
+    charge_amount = ""
+    is_inpatient = frappe.get_value("Appointment Type", appointment_type, "ip")
+    field_name = "inpatient_visit_charge" if is_inpatient else "op_consulting_charge"
+    charge_amount = frappe.get_value(
+        "Healthcare Practitioner", practitioner, field_name)
+    return charge_amount
