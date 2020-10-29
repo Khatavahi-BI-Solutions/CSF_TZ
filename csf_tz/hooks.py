@@ -306,10 +306,10 @@ doc_events = {
 		"on_update_after_submit":"csf_tz.csftz_hooks.student_applicant.make_student_applicant_fees",
 	},
 	"Patient Appointment": {
-		"onload":"csf_tz.nhif.api.patient_appointment.test",
+		"after_insert":"csf_tz.nhif.api.patient_appointment.invoice_appointment",
 	},
 }
-# dev-bench/apps/csf_tz/csf_tz/nhif/api/patient_appointment.py
+
 # Scheduled Tasks
 # ---------------
 

@@ -48,7 +48,7 @@ frappe.ui.form.on('Patient Appointment', {
             method: 'csf_tz.nhif.api.patient_appointment.get_paid_amount',
             args: {
                 'insurance_subscription': frm.doc.insurance_subscription,
-                'billing_item':frm.doc.billing_item,
+                'billing_item': frm.doc.billing_item,
                 'company': frm.doc.company,
             },
             callback: function (data) {
@@ -58,7 +58,7 @@ frappe.ui.form.on('Patient Appointment', {
             }
         });
     },
-    get_default_paid_amount: function(frm) {
+    get_default_paid_amount: function (frm) {
         if (frm.doc.practitioner) {
             frappe.call({
                 method: 'frappe.client.get',
