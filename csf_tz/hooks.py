@@ -185,7 +185,6 @@ doctype_js = {
 	"Payroll Entry": "csf_tz/payroll_entry.js",
 	"Salary Slip": "csf_tz/salary_slip.js",
 	"Patient Appointment": "nhif/api/patient_appointment.js",
-	# "Patient Appointment": "csf_tz/patient_appointment.js",
 }
 #csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
