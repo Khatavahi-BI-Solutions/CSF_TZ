@@ -111,6 +111,8 @@ fixtures = [
 		"Operation-image",
 		"Employee-attachments",
 		"Employee-files",
+		"Healthcare Insurance Claim-reference_dn",
+		"Healthcare Insurance Claim-reference_dt",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Sales Invoice-pos_profile-in_standard_filter",
