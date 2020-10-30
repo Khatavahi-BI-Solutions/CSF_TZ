@@ -85,10 +85,10 @@ def invoice_appointment(name):
         sales_invoice.submit()
         frappe.msgprint(_('Sales Invoice {0} created'.format(
             sales_invoice.name)), alert=True)
-        frappe.db.set_value('Patient Appointment',
-                            appointment_doc.name, 'invoiced', 1)
-        frappe.db.set_value('Patient Appointment', appointment_doc.name,
-                            'ref_sales_invoice', sales_invoice.name)
+        appointment_doc = frappe.get_doc("Patient Appointment", appointment_doc.name)
+        appointment_doc.ref_sales_invoice = sales_invoice.name
+        appointment_doc.invoiced = 1
+        appointment_doc.save()
         return "true"
 
 @frappe.whitelist()
@@ -109,3 +109,19 @@ def get_consulting_charge_amount(appointment_type, practitioner):
     charge_amount = frappe.get_value(
         "Healthcare Practitioner", practitioner, field_name)
     return charge_amount
+
+
+@frappe.whitelist()
+def make_vital(appointment_doc, method):
+    if  not appointment_doc.ref_vital_signs and appointment_doc.invoiced:
+        vital_doc = frappe.get_doc(dict(
+            doctype = "Vital Signs",
+            patient = appointment_doc.patient,
+            vappointment = appointment_doc.patient,
+            company = appointment_doc.company,
+        ))
+        vital_doc.save()
+        appointment_doc.ref_vital_signs = vital_doc.name
+        console(vital_doc)
+        frappe.msgprint(_('Vital Signs {0} created'.format(
+                vital_doc.name)), alert=True)

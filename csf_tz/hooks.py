@@ -113,6 +113,7 @@ fixtures = [
 		"Employee-files",
 		"Healthcare Insurance Claim-reference_dn",
 		"Healthcare Insurance Claim-reference_dt",
+		"Patient Appointment-ref_vital_signs",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Sales Invoice-pos_profile-in_standard_filter",
@@ -307,9 +308,9 @@ doc_events = {
 	"Student Applicant": {
 		"on_update_after_submit":"csf_tz.csftz_hooks.student_applicant.make_student_applicant_fees",
 	},
-	# "Patient Appointment": {
-	# 	"after_insert":"csf_tz.nhif.api.patient_appointment.invoice_appointment",
-	# },
+	"Patient Appointment": {
+		"validate":"csf_tz.nhif.api.patient_appointment.make_vital",
+	},
 }
 
 # Scheduled Tasks
