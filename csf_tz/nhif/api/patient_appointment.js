@@ -8,7 +8,24 @@ frappe.ui.form.on('Patient Appointment', {
     },
 
     refresh: function (frm) {
-
+        if (!frm.doc.invoiced && frm.doc.patient && frm.doc.mode_of_payment && !frm.doc.insurance_subscription) {
+			frm.add_custom_button(__('Creat Sales Invoice'), function () {
+                if (frm.is_dirty()) {
+                    frm.save();
+                }
+				frappe.call({
+                    method: 'csf_tz.nhif.api.patient_appointment.invoice_appointment',
+                    args: {
+                        'name':frm.doc.name
+                    },
+                    callback: function (data) {
+                        if (data.message) {
+                            frm.reload_doc()
+                        }
+                    }
+                });
+			});
+		}
     },
     insurance_subscription: function (frm) {
         frm.trigger("mandatory_fields")

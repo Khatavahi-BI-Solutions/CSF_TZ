@@ -37,8 +37,9 @@ def get_paid_amount(insurance_subscription, billing_item, company):
 
     return paid_amount
 
-
-def invoice_appointment(appointment_doc, method):
+@frappe.whitelist()
+def invoice_appointment(name):
+    appointment_doc = frappe.get_doc("Patient Appointment", name)
     automate_invoicing = frappe.db.get_single_value(
         'Healthcare Settings', 'automate_appointment_invoicing')
     appointment_invoiced = frappe.db.get_value(
@@ -88,7 +89,7 @@ def invoice_appointment(appointment_doc, method):
                             appointment_doc.name, 'invoiced', 1)
         frappe.db.set_value('Patient Appointment', appointment_doc.name,
                             'ref_sales_invoice', sales_invoice.name)
-
+        return "true"
 
 @frappe.whitelist()
 def get_consulting_charge_item(appointment_type, practitioner):
