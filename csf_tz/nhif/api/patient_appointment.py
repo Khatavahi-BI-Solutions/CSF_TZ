@@ -117,7 +117,7 @@ def make_vital(appointment_doc, method):
         vital_doc = frappe.get_doc(dict(
             doctype = "Vital Signs",
             patient = appointment_doc.patient,
-            vappointment = appointment_doc.patient,
+            appointment = appointment_doc.name,
             company = appointment_doc.company,
         ))
         vital_doc.save()
