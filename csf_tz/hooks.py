@@ -311,6 +311,9 @@ doc_events = {
 	"Patient Appointment": {
 		"validate":"csf_tz.nhif.api.patient_appointment.make_vital",
 	},
+	"Vital Signs": {
+		"on_submit":"csf_tz.nhif.api.patient_appointment.make_encounter",
+	},
 }
 
 # Scheduled Tasks

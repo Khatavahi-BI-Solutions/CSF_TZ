@@ -10,11 +10,7 @@ from erpnext.healthcare.doctype.patient_appointment.patient_appointment import g
 from erpnext.healthcare.doctype.healthcare_settings.healthcare_settings import get_receivable_account
 from erpnext.healthcare.utils import check_fee_validity, get_service_item_and_practitioner_charge
 from frappe.utils import getdate
-
-
-def test(doc, method):
-    pass
-    # console(doc.name, method)
+from frappe.model.mapper import get_mapped_doc
 
 
 @frappe.whitelist()
@@ -36,6 +32,7 @@ def get_paid_amount(insurance_subscription, billing_item, company):
         paid_amount = item_prices_data[0].price_list_rate
 
     return paid_amount
+
 
 @frappe.whitelist()
 def invoice_appointment(name):
@@ -85,11 +82,13 @@ def invoice_appointment(name):
         sales_invoice.submit()
         frappe.msgprint(_('Sales Invoice {0} created'.format(
             sales_invoice.name)), alert=True)
-        appointment_doc = frappe.get_doc("Patient Appointment", appointment_doc.name)
+        appointment_doc = frappe.get_doc(
+            "Patient Appointment", appointment_doc.name)
         appointment_doc.ref_sales_invoice = sales_invoice.name
         appointment_doc.invoiced = 1
         appointment_doc.save()
         return "true"
+
 
 @frappe.whitelist()
 def get_consulting_charge_item(appointment_type, practitioner):
@@ -111,17 +110,39 @@ def get_consulting_charge_amount(appointment_type, practitioner):
     return charge_amount
 
 
-@frappe.whitelist()
 def make_vital(appointment_doc, method):
-    if  not appointment_doc.ref_vital_signs and appointment_doc.invoiced:
+    if not appointment_doc.ref_vital_signs and appointment_doc.invoiced:
         vital_doc = frappe.get_doc(dict(
-            doctype = "Vital Signs",
-            patient = appointment_doc.patient,
-            appointment = appointment_doc.name,
-            company = appointment_doc.company,
+            doctype="Vital Signs",
+            patient=appointment_doc.patient,
+            appointment=appointment_doc.name,
+            company=appointment_doc.company,
         ))
         vital_doc.save()
         appointment_doc.ref_vital_signs = vital_doc.name
         console(vital_doc)
         frappe.msgprint(_('Vital Signs {0} created'.format(
-                vital_doc.name)), alert=True)
+            vital_doc.name)), alert=True)
+
+
+def make_encounter(vital_doc, method):
+    source_name = vital_doc.appointment
+    target_doc = None
+    appointment_doc = get_mapped_doc('Patient Appointment', source_name, {
+        'Patient Appointment': {
+            'doctype': 'Patient Encounter',
+            'field_map': [
+                ['appointment', 'name'],
+                ['patient', 'patient'],
+                ['practitioner', 'practitioner'],
+                ['medical_department', 'department'],
+                ['patient_sex', 'patient_sex'],
+                ['invoiced', 'invoiced'],
+                ['company', 'company'],
+                ['appointment_type', 'appointment_type']
+            ]
+        }
+    }, target_doc)
+    appointment_doc.save()
+    frappe.msgprint(_('Patient Appointment {0} created'.format(
+        appointment_doc.name)), alert=True)
