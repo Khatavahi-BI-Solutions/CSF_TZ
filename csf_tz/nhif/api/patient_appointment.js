@@ -48,6 +48,7 @@ frappe.ui.form.on('Patient Appointment', {
         frm.trigger("get_consulting_charge_item")
     },
     mandatory_fields: function (frm) {
+        frm.trigger("get_consulting_charge_item")
         if (frm.doc.insurance_subscription) {
             frm.toggle_reqd("mode_of_payment", false);
         }
@@ -80,7 +81,7 @@ frappe.ui.form.on('Patient Appointment', {
         });
     },
     get_default_paid_amount: function (frm) {
-        if (frm.doc.practitioner) {
+        if (frm.doc.practitioner && !frm.doc.insurance_subscription) {
             frappe.call({
                 method: 'csf_tz.nhif.api.patient_appointment.get_consulting_charge_amount',
                 args: {
@@ -97,6 +98,9 @@ frappe.ui.form.on('Patient Appointment', {
         }
     },
     get_consulting_charge_item: function (frm) {
+        if (!frm.doc.practitioner) {
+            return
+        }
         frappe.call({
             method: 'csf_tz.nhif.api.patient_appointment.get_consulting_charge_item',
             args: {

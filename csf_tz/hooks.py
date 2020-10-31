@@ -309,7 +309,10 @@ doc_events = {
 		"on_update_after_submit":"csf_tz.csftz_hooks.student_applicant.make_student_applicant_fees",
 	},
 	"Patient Appointment": {
-		"validate":"csf_tz.nhif.api.patient_appointment.make_vital",
+		"validate":[
+			"csf_tz.nhif.api.patient_appointment.make_vital",
+			# "csf_tz.nhif.api.patient_appointment.update_paid_amount"
+		]
 	},
 	"Vital Signs": {
 		"on_submit":"csf_tz.nhif.api.patient_appointment.make_encounter",

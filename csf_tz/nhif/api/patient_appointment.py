@@ -118,7 +118,7 @@ def make_vital(appointment_doc, method):
             appointment=appointment_doc.name,
             company=appointment_doc.company,
         ))
-        vital_doc.save()
+        vital_doc.save(ignore_permissions=True)
         appointment_doc.ref_vital_signs = vital_doc.name
         console(vital_doc)
         frappe.msgprint(_('Vital Signs {0} created'.format(
@@ -143,6 +143,20 @@ def make_encounter(vital_doc, method):
             ]
         }
     }, target_doc)
-    appointment_doc.save()
-    frappe.msgprint(_('Patient Appointment {0} created'.format(
+
+    appointment_doc.save(ignore_permissions=True)
+    frappe.msgprint(_('Patient Encounter {0} created'.format(
         appointment_doc.name)), alert=True)
+
+
+# def update_paid_amount(appointment_doc, method):
+#     if appointment_doc.insurance_subscription:
+#         if not appointment_doc.insurance_subscription or not appointment_doc.billing_item:
+#             return
+#         appointment_doc.paid_amount = get_paid_amount(
+#             appointment_doc.insurance_subscription, appointment_doc.billing_item, appointment_doc.company)
+#     elif appointment_doc.mode_of_payment:
+#         if not appointment_doc.practitioner or not appointment_doc.insurance_subscription:
+#             return
+#         appointment_doc.paid_amount = (
+#             appointment_doc.appointment_type, appointment_doc.practitioner)
