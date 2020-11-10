@@ -114,6 +114,14 @@ fixtures = [
 		"Healthcare Insurance Claim-reference_dn",
 		"Healthcare Insurance Claim-reference_dt",
 		"Patient Appointment-ref_vital_signs",
+		"Patient-insurance_details",
+		"Patient-insurance_company",
+		"Patient-column_break_3",
+		"Patient-card_no",
+		"Patient-allow_update_from_insurance",
+		"Appointment Type-visit_type_id",
+		"Patient Appointment-referral_no",
+		"Patient Appointment-authorization_number",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Sales Invoice-pos_profile-in_standard_filter",
@@ -316,6 +324,9 @@ doc_events = {
 	},
 	"Vital Signs": {
 		"on_submit":"csf_tz.nhif.api.patient_appointment.make_encounter",
+	},
+	"Patient": {
+		"validate":"csf_tz.nhif.api.patient.get_token",
 	},
 }
 

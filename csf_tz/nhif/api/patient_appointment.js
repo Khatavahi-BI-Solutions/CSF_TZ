@@ -5,6 +5,9 @@ frappe.ui.form.on('Patient Appointment', {
 
     onload: function (frm) {
         frm.trigger("mandatory_fields")
+        frm.add_custom_button(__('get authorization num'), function () {
+            frm.trigger('get_authorization_num')
+        });
     },
 
     refresh: function (frm) {
@@ -121,5 +124,21 @@ frappe.ui.form.on('Patient Appointment', {
                 frm.toggle_display('paid_amount', 1);
             }, 100)
         }
+    },
+    get_authorization_num: function(frm) {
+        frappe.call({
+            method: 'csf_tz.nhif.api.patient_appointment.get_authorization_num',
+            args: {
+                'patient': frm.doc.patient,
+                'company': frm.doc.company,
+                'appointment_type': frm.doc.appointment_type,
+                'referral_no': frm.doc.referral_no,
+            },
+            callback: function (data) {
+                if (data.message) {
+                    frm.set_value("authorization_number", data.message)
+                }
+            }
+        });
     },
 })

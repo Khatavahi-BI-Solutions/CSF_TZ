@@ -5,12 +5,19 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import _
-from csf_tz import console
 from erpnext.healthcare.doctype.patient_appointment.patient_appointment import get_appointment_item, check_is_new_patient
 from erpnext.healthcare.doctype.healthcare_settings.healthcare_settings import get_receivable_account
 from erpnext.healthcare.utils import check_fee_validity, get_service_item_and_practitioner_charge
 from frappe.utils import getdate
 from frappe.model.mapper import get_mapped_doc
+from csf_tz.nhif.api.token import get_nhifservice_token
+from erpnext import get_company_currency, get_default_company
+import json
+import requests
+from time import sleep
+# from frappe.utils import  now, add_to_date, now_datetime
+from csf_tz import console
+
 
 
 @frappe.whitelist()
@@ -160,3 +167,39 @@ def make_encounter(vital_doc, method):
 #             return
 #         appointment_doc.paid_amount = (
 #             appointment_doc.appointment_type, appointment_doc.practitioner)
+
+@frappe.whitelist()
+def get_authorization_num(patient, company, appointment_type, referral_no=""):
+    card_no = frappe.get_value("Patient", patient, "card_no")
+    if not card_no:
+        frappe.msgprint(_("Please set Card No in Patient master"))
+        return
+    card_no = "CardNo=" + str(card_no)
+    visit_type_id = "&VisitTypeID=" + frappe.get_value("Appointment Type", appointment_type, "visit_type_id")[:1]
+    referral_no = "&ReferralNo=" + str(referral_no) 
+    # remarks = "&Remarks=" + ""
+    token = get_nhifservice_token(company)
+    
+    nhifservice_url = frappe.get_value("Company NHIF Settings", company, "nhifservice_url")
+    headers = {
+        "Authorization" : "Bearer " + token
+    }
+    url = str(nhifservice_url) + "/nhifservice/breeze//verification/AuthorizeCard?" + card_no + visit_type_id + referral_no # + remarks
+    for i in range(3):
+        try:
+            r = requests.get(url, headers = headers, timeout=5)
+            r.raise_for_status()
+            frappe.logger().debug({"webhook_success": r.text})
+            if json.loads(r.text):
+                card = json.loads(r.text)
+                console(card)
+                return card["AuthorizationNo"]
+            else:
+                frappe.throw(json.loads(r.text))
+        except Exception as e:
+            frappe.logger().debug({"webhook_error": e, "try": i + 1})
+            sleep(3 * i + 1)
+            if i != 2:
+                continue
+            else:
+                raise e
