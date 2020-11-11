@@ -176,7 +176,7 @@ def get_authorization_num(insurance_subscription, company, appointment_type, ref
         return
     card_no = frappe.get_value("Healthcare Insurance Subscription", insurance_subscription, "coverage_plan_card_number")
     if not card_no:
-        frappe.msgprint(_("Please set Card No in Healthcare Insurance Subscription"))
+        frappe.msgprint(_("Please set Card No in Healthcare Insurance Subscription {0}".format(insurance_subscription)))
         return
     card_no = "CardNo=" + str(card_no)
     visit_type_id = "&VisitTypeID=" + frappe.get_value("Appointment Type", appointment_type, "visit_type_id")[:1]
