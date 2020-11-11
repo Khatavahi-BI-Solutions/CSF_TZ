@@ -168,4 +168,7 @@ frappe.ui.form.on('Patient Appointment', {
     insurance_claim: function(frm) {
         frm.trigger("mandatory_fields")
     },
+    coverage_plan_card_number: function(frm) {
+        frm.trigger("get_authorization_num")
+    }
 })
