@@ -82,7 +82,6 @@ fixtures = [
 		"Patient Appointment-reference_journal_entry",
 		"Patient Appointment-referral_no",
 		"Patient Encounter-examination_detail",
-		"Patient-allow_update_from_insurance",
 		"Patient-card_no",
 		"Patient-column_break_2",
 		"Patient-column_break_3",
@@ -169,6 +168,8 @@ fixtures = [
 		"Supplier-vrn",
 		"Task-github_sync_id",
 		"Vital Signs-oxygen_saturation_spo2",
+		"Patient-product_code",
+		"Patient-membership_no"
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
