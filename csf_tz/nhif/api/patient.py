@@ -11,7 +11,7 @@ import json
 import requests
 from time import sleep
 # from frappe.utils import  now, add_to_date, now_datetime
-# from csf_tz import console
+from csf_tz import console
 
 
 
@@ -35,6 +35,8 @@ def get_patinet_info(card_no = None):
             frappe.logger().debug({"webhook_success": r.text})
             if json.loads(r.text):
                 card = json.loads(r.text)
+                # console(card)
+                frappe.msgprint(_(card["Remarks"]), alert=True)
                 return card
             else:
                 frappe.throw(json.loads(r.text))

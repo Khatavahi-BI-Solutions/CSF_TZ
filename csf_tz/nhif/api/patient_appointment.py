@@ -15,7 +15,6 @@ from erpnext import get_company_currency, get_default_company
 import json
 import requests
 from time import sleep
-# from frappe.utils import  now, add_to_date, now_datetime
 from csf_tz import console
 
 
@@ -196,7 +195,8 @@ def get_authorization_num(insurance_subscription, company, appointment_type, ref
             frappe.logger().debug({"webhook_success": r.text})
             if json.loads(r.text):
                 card = json.loads(r.text)
-                console(card)
+                # console(card)
+                frappe.msgprint(_(card["Remarks"]), alert=True)
                 return card["AuthorizationNo"]
             else:
                 frappe.throw(json.loads(r.text))

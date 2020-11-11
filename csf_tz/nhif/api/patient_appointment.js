@@ -156,12 +156,6 @@ frappe.ui.form.on('Patient Appointment', {
                         indicator:'green'
                         }, 5);
                     }
-                else {
-                    frappe.show_alert({
-                        message:__("Unsuccessful request for getting auth no"),
-                        indicator:'red'
-                        }, 15);
-                }
             }
         });
     },
