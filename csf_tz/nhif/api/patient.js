@@ -108,7 +108,7 @@ function update_patient_info(frm, card){
     frm.set_value("membership_no", card.MembershipNo)
     frm.save()
     frappe.show_alert({
-        message:__("Patient's information is updated"),
+        message:__(card.Remarks),
         indicator:'green'
     }, 5);
 }
