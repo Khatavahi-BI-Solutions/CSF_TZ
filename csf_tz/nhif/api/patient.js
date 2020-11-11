@@ -50,6 +50,11 @@ frappe.ui.form.on('Patient', {
                             </tr>
                             <tr>
                                 <td>Last Name</td>
+                                <td>${frm.doc.middle_name}</td>
+                                <td>${card.MiddleName}</td>
+                            </tr>
+                            <tr>
+                                <td>Last Name</td>
                                 <td>${frm.doc.last_name}</td>
                                 <td>${card.LastName}</td>
                             </tr>
@@ -94,6 +99,7 @@ frappe.ui.form.on('Patient', {
 
 function update_patient_info(frm, card){
     frm.set_value("first_name", card.FirstName)
+    frm.set_value("middle_name", card.MiddleName)
     frm.set_value("last_name", card.LastName)
     frm.set_value("patient_name", card.FullName)
     frm.set_value("sex", card.Gender)
@@ -102,7 +108,7 @@ function update_patient_info(frm, card){
     frm.set_value("membership_no", card.MembershipNo)
     frm.save()
     frappe.show_alert({
-    message:__("Patient's information is updated"),
-    indicator:'green'
+        message:__("Patient's information is updated"),
+        indicator:'green'
     }, 5);
 }
