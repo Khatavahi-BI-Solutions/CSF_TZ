@@ -5,6 +5,7 @@ frappe.ui.form.on('Patient Appointment', {
         frm.trigger("mandatory_fields")
     },
     refresh: function (frm) {
+        frm.trigger("update_primary_action")
         if (!frm.doc.invoiced && frm.doc.patient && frm.doc.mode_of_payment && !frm.doc.insurance_subscription) {
             frm.add_custom_button(__('Create Sales Invoice'), function () {
                 if (frm.is_dirty()) {
@@ -27,6 +28,7 @@ frappe.ui.form.on('Patient Appointment', {
     },
     insurance_subscription: function (frm) {
         frm.trigger("mandatory_fields")
+        frm.trigger("update_primary_action")
         if (frm.doc.insurance_subscription) {
             frm.set_value("mode_of_payment", "")
             frm.trigger('get_paid_amount')
@@ -37,6 +39,7 @@ frappe.ui.form.on('Patient Appointment', {
     },
     mode_of_payment: function (frm) {
         frm.trigger("mandatory_fields")
+        frm.trigger("update_primary_action")
         if (frm.doc.mode_of_payment) {
             frm.set_value("insurance_subscription", "")
             frm.trigger('get_default_paid_amount')
@@ -168,7 +171,57 @@ frappe.ui.form.on('Patient Appointment', {
     insurance_claim: function(frm) {
         frm.trigger("mandatory_fields")
     },
-    coverage_plan_card_number: function(frm) {
-        frm.trigger("get_authorization_num")
+    update_primary_action: function(frm) {
+        if (frm.is_new()) {
+            if (!frm.doc.mode_of_payment && !frm.doc.insurance_subscription) {
+                frm.page.set_primary_action(__('Panding'), () => {
+                    frappe.show_alert({
+                        message:__("Please select Insurance Subscription or Mode of Payment"),
+                        indicator:'red'
+                        }, 15);
+                });
+            }
+            else {
+                frm.page.set_primary_action(__('Check Availability'), function () {
+                    if (!frm.doc.patient) {
+                        frappe.msgprint({
+                            title: __('Not Allowed'),
+                            message: __('Please select Patient first'),
+                            indicator: 'red'
+                        });
+                    } else {
+                        frappe.call({
+                            method: 'erpnext.healthcare.doctype.patient_appointment.patient_appointment.check_payment_fields_reqd',
+                            args: { 'patient': frm.doc.patient },
+                            callback: function (data) {
+                                if (data.message == true) {
+                                    if (frm.doc.mode_of_payment && frm.doc.paid_amount) {
+                                        check_and_set_availability(frm);
+                                    }
+                                    if (!frm.doc.mode_of_payment) {
+                                        frappe.msgprint({
+                                            title: __('Not Allowed'),
+                                            message: __('Please select a Mode of Payment first'),
+                                            indicator: 'red'
+                                        });
+                                    }
+                                    if (!frm.doc.paid_amount) {
+                                        frappe.msgprint({
+                                            title: __('Not Allowed'),
+                                            message: __('Please set the Paid Amount first'),
+                                            indicator: 'red'
+                                        });
+                                    }
+                                } else {
+                                    check_and_set_availability(frm);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        } else {
+            frm.page.set_primary_action(__('Save'), () => frm.save());
+        }
     }
 })
