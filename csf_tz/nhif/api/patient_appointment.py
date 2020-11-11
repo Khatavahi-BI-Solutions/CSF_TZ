@@ -114,7 +114,7 @@ def get_consulting_charge_amount(appointment_type, practitioner):
     field_name = "inpatient_visit_charge" if is_inpatient else "op_consulting_charge"
     charge_amount = frappe.get_value(
         "Healthcare Practitioner", practitioner, field_name)
-    return charge_amount
+    return charge_amount    
 
 
 def make_vital(appointment_doc, method):
@@ -169,10 +169,14 @@ def make_encounter(vital_doc, method):
 #             appointment_doc.appointment_type, appointment_doc.practitioner)
 
 @frappe.whitelist()
-def get_authorization_num(patient, company, appointment_type, referral_no=""):
-    card_no = frappe.get_value("Patient", patient, "card_no")
+def get_authorization_num(insurance_subscription, company, appointment_type, referral_no=""):
+    enable_nhif_api = frappe.get_value("Company NHIF Settings", company, "enable")
+    if not enable_nhif_api:
+        frappe.msgprint(_("Company {0} not enabled for NHIF Integration".format(company)), alert=True)
+        return
+    card_no = frappe.get_value("Healthcare Insurance Subscription", insurance_subscription, "coverage_plan_card_number")
     if not card_no:
-        frappe.msgprint(_("Please set Card No in Patient master"))
+        frappe.msgprint(_("Please set Card No in Healthcare Insurance Subscription"))
         return
     card_no = "CardNo=" + str(card_no)
     visit_type_id = "&VisitTypeID=" + frappe.get_value("Appointment Type", appointment_type, "visit_type_id")[:1]
@@ -184,7 +188,7 @@ def get_authorization_num(patient, company, appointment_type, referral_no=""):
     headers = {
         "Authorization" : "Bearer " + token
     }
-    url = str(nhifservice_url) + "/nhifservice/breeze//verification/AuthorizeCard?" + card_no + visit_type_id + referral_no # + remarks
+    url = str(nhifservice_url) + "/nhifservice/breeze/verification/AuthorizeCard?" + card_no + visit_type_id + referral_no # + remarks
     for i in range(3):
         try:
             r = requests.get(url, headers = headers, timeout=5)

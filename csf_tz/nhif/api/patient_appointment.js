@@ -1,18 +1,15 @@
 frappe.ui.form.on('Patient Appointment', {
     setup: function (frm) {
-
     },
-
     onload: function (frm) {
         frm.trigger("mandatory_fields")
-        frm.add_custom_button(__('get authorization num'), function () {
+        frm.add_custom_button(__('Get Authorization No'), function () {
             frm.trigger('get_authorization_num')
         });
     },
-
     refresh: function (frm) {
         if (!frm.doc.invoiced && frm.doc.patient && frm.doc.mode_of_payment && !frm.doc.insurance_subscription) {
-            frm.add_custom_button(__('Creat Sales Invoice'), function () {
+            frm.add_custom_button(__('Create Sales Invoice'), function () {
                 if (frm.is_dirty()) {
                     frm.save();
                 }
@@ -29,6 +26,7 @@ frappe.ui.form.on('Patient Appointment', {
                 });
             });
         }
+        frm.trigger("mandatory_fields")
     },
     insurance_subscription: function (frm) {
         frm.trigger("mandatory_fields")
@@ -64,6 +62,16 @@ frappe.ui.form.on('Patient Appointment', {
         else {
             frm.toggle_reqd("insurance_subscription", true);
         }
+        if (frm.doc.invoiced && frm.doc.mode_of_payment) {
+            frm.set_value(["insurance_subscription","insurance_company"], "")
+            frm.toggle_display('insurance_section', false);
+            frm.toggle_enable(['referral_no', 'source', 'mode_of_payment', 'paid_amount'], false)
+        }
+        if (frm.doc.insurance_claim) {
+            frm.set_value(["mode_of_payment", "paid_amount"], "")
+            frm.toggle_display('section_break_16', false);
+            frm.toggle_enable(['referral_no', 'source', 'insurance_subscription'], false)
+        }
     },
     get_paid_amount: function (frm) {
         if (!frm.doc.insurance_subscription || !frm.doc.billing_item) {
@@ -95,7 +103,6 @@ frappe.ui.form.on('Patient Appointment', {
                     if (data.message) {
                         frm.set_value("paid_amount", data.message);
                     }
-
                 }
             });
         }
@@ -120,19 +127,23 @@ frappe.ui.form.on('Patient Appointment', {
     patient: function (frm) {
         if (frm.doc.patient) {
             setTimeout(() => {
-                frm.toggle_display('mode_of_payment', 1);
-                frm.toggle_display('paid_amount', 1);
+                frm.toggle_display('mode_of_payment', true);
+                frm.toggle_display('paid_amount', true);
             }, 100)
         }
     },
     get_authorization_num: function(frm) {
+        if (!frm.doc.insurance_subscription) {
+            frappe.msgprint("Select Insurance Subscription to get authorization number")
+            return
+        }
         frappe.call({
             method: 'csf_tz.nhif.api.patient_appointment.get_authorization_num',
             args: {
-                'patient': frm.doc.patient,
+                'insurance_subscription': frm.doc.insurance_subscription,
                 'company': frm.doc.company,
                 'appointment_type': frm.doc.appointment_type,
-                'referral_no': frm.doc.referral_no,
+                'referral_no': frm.doc.referral_no
             },
             callback: function (data) {
                 if (data.message) {
@@ -141,4 +152,10 @@ frappe.ui.form.on('Patient Appointment', {
             }
         });
     },
+    invoiced: function(frm) {
+        frm.trigger("mandatory_fields")
+    },
+    insurance_claim: function(frm) {
+        frm.trigger("mandatory_fields")
+    }
 })
