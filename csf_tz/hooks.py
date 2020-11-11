@@ -253,6 +253,7 @@ doctype_js = {
 	"Payroll Entry": "csf_tz/payroll_entry.js",
 	"Salary Slip": "csf_tz/salary_slip.js",
 	"Patient Appointment": "nhif/api/patient_appointment.js",
+	"Patient": "nhif/api/patient.js",
 }
 #csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
@@ -383,7 +384,7 @@ doc_events = {
 		"on_submit":"csf_tz.nhif.api.patient_appointment.make_encounter",
 	},
 	"Patient": {
-		"validate":"csf_tz.nhif.api.patient.get_token",
+		# "validate":"csf_tz.nhif.api.patient.get_token",
 	},
 }
 

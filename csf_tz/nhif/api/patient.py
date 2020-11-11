@@ -10,16 +10,14 @@ from erpnext import get_company_currency, get_default_company
 import json
 import requests
 from time import sleep
-from frappe.utils import  now, add_to_date, now_datetime
+# from frappe.utils import  now, add_to_date, now_datetime
 from csf_tz import console
 
 
 
-
-def get_token(doc, method):
-    if not doc.allow_update_from_insurance:
-        return
-    if not doc.card_no:
+@frappe.whitelist()
+def get_patinet_info(card_no = None):
+    if not card_no:
         frappe.msgprint(_("Please set Card No"))
         return
     company = get_default_company()
@@ -29,7 +27,7 @@ def get_token(doc, method):
     headers = {
         "Authorization" : "Bearer " + token
     }
-    url = str(nhifservice_url) + "/nhifservice/breeze//verification/GetCardDetails?CardNo=" + str(doc.card_no)
+    url = str(nhifservice_url) + "/nhifservice/breeze//verification/GetCardDetails?CardNo=" + str(card_no)
     for i in range(3):
         try:
             r = requests.get(url, headers = headers, timeout=5)
@@ -38,8 +36,6 @@ def get_token(doc, method):
             if json.loads(r.text):
                 card = json.loads(r.text)
                 console(card)
-                doc.patient_name = "{0} {1} {2}".format(card["FirstName"], card["MiddleName"], card["LastName"])
-                doc.sex = card["Gender"]
                 return card
             else:
                 frappe.throw(json.loads(r.text))
