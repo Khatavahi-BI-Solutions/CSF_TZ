@@ -169,7 +169,12 @@ fixtures = [
 		"Task-github_sync_id",
 		"Vital Signs-oxygen_saturation_spo2",
 		"Patient-product_code",
-		"Patient-membership_no"
+		"Patient-membership_no",
+		"Patient Appointment-get_authorization_number",
+		"Healthcare Service Order-prescribed",
+		"Healthcare Service Insurance Coverage-maximum_claim_duration",
+
+
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
@@ -203,6 +208,8 @@ fixtures = [
 		"Stock Entry-from_warehouse-fetch_from",
 		"Student Applicant-application_status-options",
 		"Student Applicant-application_status-read_only",
+		"Patient Appointment-naming_series-hidden",
+		"Patient-main-quick_entry",
 	)]]},
 ]
 

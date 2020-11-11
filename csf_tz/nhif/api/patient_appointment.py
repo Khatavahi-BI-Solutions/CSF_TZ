@@ -118,7 +118,7 @@ def get_consulting_charge_amount(appointment_type, practitioner):
 
 
 def make_vital(appointment_doc, method):
-    if not appointment_doc.ref_vital_signs and appointment_doc.invoiced:
+    if not appointment_doc.ref_vital_signs and (appointment_doc.invoiced or appointment_doc.insurance_claim):
         vital_doc = frappe.get_doc(dict(
             doctype="Vital Signs",
             patient=appointment_doc.patient,

@@ -3,9 +3,6 @@ frappe.ui.form.on('Patient Appointment', {
     },
     onload: function (frm) {
         frm.trigger("mandatory_fields")
-        frm.add_custom_button(__('Get Authorization No'), function () {
-            frm.trigger('get_authorization_num')
-        });
     },
     refresh: function (frm) {
         if (!frm.doc.invoiced && frm.doc.patient && frm.doc.mode_of_payment && !frm.doc.insurance_subscription) {
@@ -132,6 +129,9 @@ frappe.ui.form.on('Patient Appointment', {
             }, 100)
         }
     },
+    get_authorization_number: function(frm) {
+        frm.trigger("get_authorization_num")
+    },
     get_authorization_num: function(frm) {
         if (!frm.doc.insurance_subscription) {
             frappe.msgprint("Select Insurance Subscription to get authorization number")
@@ -148,6 +148,16 @@ frappe.ui.form.on('Patient Appointment', {
             callback: function (data) {
                 if (data.message) {
                     frm.set_value("authorization_number", data.message)
+                    frappe.show_alert({
+                        message:__("Authorization Number is updated"),
+                        indicator:'green'
+                        }, 5);
+                    }
+                else {
+                    frappe.show_alert({
+                        message:__("Unsuccessful request for getting auth no"),
+                        indicator:'red'
+                        }, 15);
                 }
             }
         });
@@ -157,5 +167,5 @@ frappe.ui.form.on('Patient Appointment', {
     },
     insurance_claim: function(frm) {
         frm.trigger("mandatory_fields")
-    }
+    },
 })
