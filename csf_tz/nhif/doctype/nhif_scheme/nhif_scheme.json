@@ -26,7 +26,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2020-11-12 04:02:40.639519",
+ "modified": "2020-11-12 15:52:22.175862",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Scheme",
@@ -47,6 +47,5 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "title_field": "scheme_name",
  "track_changes": 1
 }

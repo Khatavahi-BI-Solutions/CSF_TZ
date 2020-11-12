@@ -15,7 +15,9 @@ from erpnext import get_company_currency, get_default_company
 import json
 import requests
 from time import sleep
-from csf_tz import console
+from csf_tz.nhif.doctype.nhif_product.nhif_product import add_product
+from csf_tz.nhif.doctype.nhif_scheme.nhif_scheme import add_scheme
+# from csf_tz import console
 
 
 
@@ -126,7 +128,7 @@ def make_vital(appointment_doc, method):
         ))
         vital_doc.save(ignore_permissions=True)
         appointment_doc.ref_vital_signs = vital_doc.name
-        console(vital_doc)
+        # console(vital_doc)
         frappe.msgprint(_('Vital Signs {0} created'.format(
             vital_doc.name)), alert=True)
 
@@ -196,6 +198,8 @@ def get_authorization_num(insurance_subscription, company, appointment_type, ref
             if json.loads(r.text):
                 card = json.loads(r.text)
                 # console(card)
+                add_scheme(card.get("SchemeID"), card.get("SchemeName"))
+                add_product(card.get("ProductCode"), card.get("ProductName"))
                 frappe.msgprint(_(card["Remarks"]), alert=True)
                 return card["AuthorizationNo"]
             else:

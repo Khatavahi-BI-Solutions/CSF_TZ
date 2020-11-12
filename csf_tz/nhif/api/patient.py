@@ -12,8 +12,8 @@ import requests
 from time import sleep
 from csf_tz.nhif.doctype.nhif_product.nhif_product import add_product
 from csf_tz.nhif.doctype.nhif_scheme.nhif_scheme import add_scheme
-from frappe.utils import  now_datetime, now
-from csf_tz import console
+from frappe.utils import now
+# from csf_tz import console
 
 
 
