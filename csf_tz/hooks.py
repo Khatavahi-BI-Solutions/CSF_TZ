@@ -385,14 +385,14 @@ doc_events = {
 	"Patient Appointment": {
 		"validate":[
 			"csf_tz.nhif.api.patient_appointment.make_vital",
-			# "csf_tz.nhif.api.patient_appointment.update_paid_amount"
+			# "csf_tz.nhif.api.patient_appointment.validate"
 		]
 	},
 	"Vital Signs": {
 		"on_submit":"csf_tz.nhif.api.patient_appointment.make_encounter",
 	},
 	"Patient": {
-		# "validate":"csf_tz.nhif.api.patient.get_token",
+		"validate":"csf_tz.nhif.api.patient.validate",
 	},
 }
 
