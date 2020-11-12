@@ -31,10 +31,10 @@ frappe.ui.form.on('Patient Appointment', {
         frm.trigger("update_primary_action")
         if (frm.doc.insurance_subscription) {
             frm.set_value("mode_of_payment", "")
-            frm.trigger('get_paid_amount')
+            frm.trigger('get_insurance_amount')
         } else {
             frm.set_value("insurance_company", "")
-            frm.trigger('get_default_paid_amount')
+            frm.trigger('get_mop_amount')
         }
     },
     mode_of_payment: function (frm) {
@@ -42,7 +42,7 @@ frappe.ui.form.on('Patient Appointment', {
         frm.trigger("update_primary_action")
         if (frm.doc.mode_of_payment) {
             frm.set_value("insurance_subscription", "")
-            frm.trigger('get_default_paid_amount')
+            frm.trigger('get_mop_amount')
         }
     },
     practitioner: function (frm) {
@@ -73,16 +73,18 @@ frappe.ui.form.on('Patient Appointment', {
             frm.toggle_enable(['referral_no', 'source', 'insurance_subscription'], false)
         }
     },
-    get_paid_amount: function (frm) {
+    get_insurance_amount: function (frm) {
         if (!frm.doc.insurance_subscription || !frm.doc.billing_item) {
             return
         }
         frappe.call({
-            method: 'csf_tz.nhif.api.patient_appointment.get_paid_amount',
+            method: 'csf_tz.nhif.api.patient_appointment.get_insurance_amount',
             args: {
                 'insurance_subscription': frm.doc.insurance_subscription,
                 'billing_item': frm.doc.billing_item,
                 'company': frm.doc.company,
+                'patient': frm.doc.patient,
+                'insurance_company': frm.doc.insurance_company,
             },
             callback: function (data) {
                 if (data.message) {
@@ -91,10 +93,10 @@ frappe.ui.form.on('Patient Appointment', {
             }
         });
     },
-    get_default_paid_amount: function (frm) {
+    get_mop_amount: function (frm) {
         if (frm.doc.practitioner && !frm.doc.insurance_subscription) {
             frappe.call({
-                method: 'csf_tz.nhif.api.patient_appointment.get_consulting_charge_amount',
+                method: 'csf_tz.nhif.api.patient_appointment.get_mop_amount',
                 args: {
                     'billing_item': frm.doc.billing_item,
                     'mop': frm.doc.mode_of_payment,

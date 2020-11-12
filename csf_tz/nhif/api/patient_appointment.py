@@ -22,17 +22,24 @@ from csf_tz.nhif.doctype.nhif_scheme.nhif_scheme import add_scheme
 
 
 @frappe.whitelist()
-def get_paid_amount(insurance_subscription, billing_item, company):
+def get_insurance_amount(insurance_subscription, billing_item, company, patient, insurance_company):
+    price_list = None
     healthcare_insurance_coverage_plan = frappe.get_value(
         "Healthcare Insurance Subscription", insurance_subscription, "healthcare_insurance_coverage_plan")
     price_list = frappe.get_value(
         "Healthcare Insurance Coverage Plan", healthcare_insurance_coverage_plan, "price_list")
-
+    if not price_list:
+        price_list = frappe.get_value(
+        "Healthcare Insurance Company", insurance_company, "default_price_list")
+    if not price_list:
+        price_list = get_default_price_list(patient)
+    if not price_list:
+            frappe.throw(_("Please set Price List in Healthcare Insurance Coverage Plan"))
     return get_item_price(billing_item, price_list, company)
 
 
 @frappe.whitelist()
-def get_consulting_charge_amount(billing_item, mop, company, patient):
+def get_mop_amount(billing_item, mop, company, patient):
     price_list = None
     price_list = frappe.get_value("Mode of Payment", mop, "price_list")
     if not price_list:
