@@ -210,6 +210,7 @@ fixtures = [
 		"Student Applicant-application_status-read_only",
 		"Patient Appointment-naming_series-hidden",
 		"Patient-main-quick_entry",
+		"Patient Appointment-section_break_19-hidden",
 	)]]},
 ]
 

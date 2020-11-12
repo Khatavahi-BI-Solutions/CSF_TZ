@@ -154,11 +154,16 @@ frappe.ui.form.on('Patient Appointment', {
             },
             callback: function (data) {
                 if (data.message) {
-                    frm.set_value("authorization_number", data.message)
-                    frappe.show_alert({
-                        message:__("Authorization Number is updated"),
-                        indicator:'green'
-                        }, 5);
+                    const card = data.message;
+                        if (card.Remarks == 'Verified OK') {
+                            frm.set_value("authorization_number", card.AuthorizationNo)
+                            frappe.show_alert({
+                                message:__("Authorization Number is updated"),
+                                indicator:'green'
+                            }, 5);
+                        } else {
+                            frm.set_value("insurance_subscription", "")
+                        }
                     }
             }
         });

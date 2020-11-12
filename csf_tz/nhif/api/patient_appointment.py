@@ -218,7 +218,7 @@ def get_authorization_num(insurance_subscription, company, appointment_type, ref
                 add_scheme(card.get("SchemeID"), card.get("SchemeName"))
                 add_product(card.get("ProductCode"), card.get("ProductName"))
                 frappe.msgprint(_(card["Remarks"]), alert=True)
-                return card["AuthorizationNo"]
+                return card
             else:
                 frappe.throw(json.loads(r.text))
         except Exception as e:
