@@ -96,8 +96,10 @@ frappe.ui.form.on('Patient Appointment', {
             frappe.call({
                 method: 'csf_tz.nhif.api.patient_appointment.get_consulting_charge_amount',
                 args: {
-                    'appointment_type': frm.doc.appointment_type,
-                    'practitioner': frm.doc.practitioner,
+                    'billing_item': frm.doc.billing_item,
+                    'mop': frm.doc.mode_of_payment,
+                    'company': frm.doc.company,
+                    'patient': frm.doc.patient,
                 },
                 callback: function (data) {
                     if (data.message) {

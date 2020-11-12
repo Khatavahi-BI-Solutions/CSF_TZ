@@ -23,23 +23,54 @@ from csf_tz.nhif.doctype.nhif_scheme.nhif_scheme import add_scheme
 
 @frappe.whitelist()
 def get_paid_amount(insurance_subscription, billing_item, company):
-    paid_amount = 0
     healthcare_insurance_coverage_plan = frappe.get_value(
         "Healthcare Insurance Subscription", insurance_subscription, "healthcare_insurance_coverage_plan")
-    pric_list = frappe.get_value(
+    price_list = frappe.get_value(
         "Healthcare Insurance Coverage Plan", healthcare_insurance_coverage_plan, "price_list")
-    company_currency = frappe.get_value("Company", company, "default_currency")
 
+    return get_item_price(billing_item, price_list, company)
+
+
+@frappe.whitelist()
+def get_consulting_charge_amount(billing_item, mop, company, patient):
+    price_list = None
+    price_list = frappe.get_value("Mode of Payment", mop, "price_list")
+    if not price_list:
+        price_list = get_default_price_list(patient)
+        if not price_list:
+            frappe.throw(_("Please set Price List in Mode of Payment"))
+    return get_item_price(billing_item, price_list, company)
+
+        
+
+def get_default_price_list(patient):
+    price_list = None
+    price_list = frappe.get_value("Patient", patient, "default_price_list")
+    if not price_list:
+        customer = frappe.get_value("Patient", patient, "customer")
+        if customer:
+            price_list = frappe.get_value("Customer", customer, "default_price_list")
+    if not price_list:
+        customer_group = frappe.get_value("Customer", customer, "customer_group")
+        frappe.get_cached_value("Customer Group", customer_group, "default_price_list")
+    if not price_list:
+        if frappe.db.exists("Price List", "Standard Selling"):
+            price_list = "Standard Selling"
+    return price_list
+
+
+def get_item_price(item_code, price_list, company):
+    price = 0
+    company_currency = frappe.get_value("Company", company, "default_currency")
     item_prices_data = frappe.get_all("Item Price",
                                       fields=[
                                           "item_code", "price_list_rate", "currency"],
                                       filters={
-                                          'price_list': pric_list, 'item_code': billing_item, 'currency': company_currency},
+                                          'price_list': price_list, 'item_code': item_code, 'currency': company_currency},
                                       order_by="valid_from desc")
     if len(item_prices_data):
-        paid_amount = item_prices_data[0].price_list_rate
-
-    return paid_amount
+        price = item_prices_data[0].price_list_rate
+    return price
 
 
 @frappe.whitelist()
@@ -108,16 +139,6 @@ def get_consulting_charge_item(appointment_type, practitioner):
     return charge_item
 
 
-@frappe.whitelist()
-def get_consulting_charge_amount(appointment_type, practitioner):
-    charge_amount = ""
-    is_inpatient = frappe.get_value("Appointment Type", appointment_type, "ip")
-    field_name = "inpatient_visit_charge" if is_inpatient else "op_consulting_charge"
-    charge_amount = frappe.get_value(
-        "Healthcare Practitioner", practitioner, field_name)
-    return charge_amount    
-
-
 def make_vital(appointment_doc, method):
     if not appointment_doc.ref_vital_signs and (appointment_doc.invoiced or appointment_doc.insurance_claim):
         vital_doc = frappe.get_doc(dict(
@@ -157,17 +178,6 @@ def make_encounter(vital_doc, method):
         appointment_doc.name)), alert=True)
 
 
-# def update_paid_amount(appointment_doc, method):
-#     if appointment_doc.insurance_subscription:
-#         if not appointment_doc.insurance_subscription or not appointment_doc.billing_item:
-#             return
-#         appointment_doc.paid_amount = get_paid_amount(
-#             appointment_doc.insurance_subscription, appointment_doc.billing_item, appointment_doc.company)
-#     elif appointment_doc.mode_of_payment:
-#         if not appointment_doc.practitioner or not appointment_doc.insurance_subscription:
-#             return
-#         appointment_doc.paid_amount = (
-#             appointment_doc.appointment_type, appointment_doc.practitioner)
 
 @frappe.whitelist()
 def get_authorization_num(insurance_subscription, company, appointment_type, referral_no=""):
