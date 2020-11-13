@@ -10,6 +10,7 @@
   "timestamp",
   "request_type",
   "request_url",
+  "request_header",
   "column_break_6",
   "user_id",
   "request_body",
@@ -21,7 +22,7 @@
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Naming Series",
-   "options": "NHIF-RES-.YY.-########",
+   "options": "NHIF-RES-.YY.-.########",
    "read_only": 1
   },
   {
@@ -71,11 +72,17 @@
    "fieldtype": "Long Text",
    "label": "Response Data",
    "read_only": 1
+  },
+  {
+   "fieldname": "request_header",
+   "fieldtype": "Small Text",
+   "label": "Request Header",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2020-11-10 17:34:57.300268",
+ "modified": "2020-11-13 15:34:55.149342",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Response Log",

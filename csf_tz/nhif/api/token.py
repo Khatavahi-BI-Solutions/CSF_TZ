@@ -12,6 +12,7 @@ import json
 import requests
 from time import sleep
 from frappe.utils import  now, add_to_date, now_datetime
+from csf_tz.nhif.doctype.nhif_response_log.nhif_response_log import add_log
 # from csf_tz import console
 
 
@@ -33,6 +34,14 @@ def get_nhifservice_token(company):
 			r = requests.request("GET", url, headers = headers, data = payload, timeout = 5)
 			r.raise_for_status()
 			frappe.logger().debug({"webhook_success": r.text})
+			if json.loads(r.text):
+				add_log(
+					request_type = "token", 
+					request_url = url, 
+					request_header = headers, 
+					request_body = payload, 
+					response_data = json.loads(r.text) 
+				)
 			if json.loads(r.text)["token_type"] == "bearer":
 				token = json.loads(r.text)["access_token"]
 				expired = json.loads(r.text)["expires_in"]
@@ -42,6 +51,12 @@ def get_nhifservice_token(company):
 				setting_doc.db_update()
 				return token
 			else:
+				add_log(
+					request_type = "token", 
+					request_url = url, 
+					request_header = headers, 
+					request_body = payload, 
+				)
 				frappe.throw(json.loads(r.text))
 		except Exception as e:
 			frappe.logger().debug({"webhook_error": e, "try": i + 1})

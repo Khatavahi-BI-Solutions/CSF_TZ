@@ -17,6 +17,7 @@ import requests
 from time import sleep
 from csf_tz.nhif.doctype.nhif_product.nhif_product import add_product
 from csf_tz.nhif.doctype.nhif_scheme.nhif_scheme import add_scheme
+from csf_tz.nhif.doctype.nhif_response_log.nhif_response_log import add_log
 # from csf_tz import console
 
 
@@ -213,6 +214,12 @@ def get_authorization_num(insurance_subscription, company, appointment_type, ref
             r.raise_for_status()
             frappe.logger().debug({"webhook_success": r.text})
             if json.loads(r.text):
+                add_log(
+				request_type = "AuthorizeCard", 
+				request_url = url, 
+				request_header = headers, 
+				response_data = json.loads(r.text) 
+			    )
                 card = json.loads(r.text)
                 # console(card)
                 add_scheme(card.get("SchemeID"), card.get("SchemeName"))
@@ -220,6 +227,11 @@ def get_authorization_num(insurance_subscription, company, appointment_type, ref
                 frappe.msgprint(_(card["Remarks"]), alert=True)
                 return card
             else:
+                add_log(
+				request_type = "AuthorizeCard", 
+				request_url = url, 
+				request_header = headers, 
+			    )
                 frappe.throw(json.loads(r.text))
         except Exception as e:
             frappe.logger().debug({"webhook_error": e, "try": i + 1})

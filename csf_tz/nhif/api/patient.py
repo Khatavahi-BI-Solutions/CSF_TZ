@@ -13,6 +13,7 @@ from time import sleep
 from csf_tz.nhif.doctype.nhif_product.nhif_product import add_product
 from csf_tz.nhif.doctype.nhif_scheme.nhif_scheme import add_scheme
 from frappe.utils import now
+from csf_tz.nhif.doctype.nhif_response_log.nhif_response_log import add_log
 # from csf_tz import console
 
 
@@ -41,6 +42,12 @@ def get_patinet_info(card_no = None):
             r.raise_for_status()
             frappe.logger().debug({"webhook_success": r.text})
             if json.loads(r.text):
+                add_log(
+					request_type = "GetCardDetails", 
+					request_url = url, 
+					request_header = headers, 
+					response_data = json.loads(r.text) 
+				)
                 card = json.loads(r.text)
                 # console(card)
                 frappe.msgprint(_(card["Remarks"]), alert=True)
@@ -48,6 +55,11 @@ def get_patinet_info(card_no = None):
                 add_product(card.get("ProductCode"), card.get("ProductName"))
                 return card
             else:
+                add_log(
+					request_type = "GetCardDetails", 
+					request_url = url, 
+					request_header = headers, 
+				)
                 frappe.throw(json.loads(r.text))
         except Exception as e:
             frappe.logger().debug({"webhook_error": e, "try": i + 1})
