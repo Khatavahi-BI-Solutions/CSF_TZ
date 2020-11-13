@@ -172,8 +172,12 @@ fixtures = [
 		"Patient Appointment-get_authorization_number",
 		"Healthcare Service Order-prescribed",
 		"Healthcare Service Insurance Coverage-maximum_claim_duration",
-
-
+		"Healthcare Insurance Claim-section_break_40",
+		"Healthcare Insurance Claim-ready_to_submit",
+		"Healthcare Insurance Claim-column_break_38",
+		"Healthcare Insurance Claim-insurance_company_item_name",
+		"Healthcare Insurance Claim-insurance_company_item_code",
+		"Healthcare Insurance Claim-section_break_35",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
