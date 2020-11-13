@@ -34,7 +34,7 @@ def get_patinet_info(card_no = None):
     headers = {
         "Authorization" : "Bearer " + token
     }
-    url = str(nhifservice_url) + "/nhifservice/breeze//verification/GetCardDetails?CardNo=" + str(card_no)
+    url = str(nhifservice_url) + "/nhifservice/breeze/verification/GetCardDetails?CardNo=" + str(card_no)
     for i in range(3):
         try:
             r = requests.get(url, headers = headers, timeout=5)
