@@ -223,7 +223,7 @@ fixtures = [
 app_include_js = [
 	"/assets/js/select_dialog.min.js",
 	"/assets/js/to_console.min.js",
-	"/assets/csf_tz/js/jobcards.min.js",
+	"/assets/js/jobcards.min.js",
 	"/assets/csf_tz/node_modules/vuetify/dist/vuetify.js",
 	]
 

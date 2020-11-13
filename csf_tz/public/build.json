@@ -5,7 +5,7 @@
     "js/to_console.min.js": [
         "public/js/to_console.js"
     ],
-    "csf_tz/js/jobcards.min.js": [
+    "js/jobcards.min.js": [
         "public/js/jobcards/jobcards.js"
     ]
 }
