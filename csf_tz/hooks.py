@@ -83,7 +83,6 @@ fixtures = [
 		"Patient Appointment-referral_no",
 		"Patient Encounter-examination_detail",
 		"Patient-card_no",
-		"Patient-column_break_2",
 		"Patient-column_break_3",
 		"Patient-insurance_company",
 		"Patient-insurance_details",
