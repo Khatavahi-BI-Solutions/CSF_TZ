@@ -26,6 +26,9 @@ frappe.ui.form.on('Patient Appointment', {
         }
         frm.trigger("mandatory_fields")
     },
+    source: function (frm) {
+        frm.trigger("toggle_reqd_referral_no")
+    },
     insurance_subscription: function (frm) {
         frm.trigger("mandatory_fields")
         frm.trigger("update_primary_action")
@@ -50,6 +53,7 @@ frappe.ui.form.on('Patient Appointment', {
     },
     mandatory_fields: function (frm) {
         frm.trigger("get_consulting_charge_item")
+        frm.trigger("toggle_reqd_referral_no")
         if (frm.doc.insurance_subscription) {
             frm.toggle_reqd("mode_of_payment", false);
         }
@@ -71,6 +75,18 @@ frappe.ui.form.on('Patient Appointment', {
             frm.set_value(["mode_of_payment", "paid_amount"], "")
             frm.toggle_display('section_break_16', false);
             frm.toggle_enable(['referral_no', 'source', 'insurance_subscription'], false)
+        }
+    },
+    toggle_reqd_referral_no: function (frm) {
+        if (frm.doc.source == "External Referral") {
+            frm.toggle_enable(['referral_no'], true)
+            if (frm.doc.insurance_subscription) {
+                frm.toggle_reqd("referral_no", true);
+            } else {
+                frm.toggle_reqd("referral_no", false);
+            }
+        } else {
+            frm.toggle_enable(['referral_no'], false)
         }
     },
     get_insurance_amount: function (frm) {
