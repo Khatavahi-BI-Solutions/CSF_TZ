@@ -8,7 +8,9 @@ frappe.ui.form.on('Sales Invoice', {
 		if (frappe.boot.active_domains.includes("Healthcare")) {
 			frm.set_df_property("patient", "hidden", 0);
 			frm.set_df_property("patient_name", "hidden", 0);
-			frm.set_df_property("ref_practitioner", "hidden", 0);
+            frm.set_df_property("ref_practitioner", "hidden", 0);
+            frm.remove_custom_button('Healthcare Services', 'Get items from');
+            frm.remove_custom_button('Prescriptions', 'Get items from');
 			if (cint(frm.doc.docstatus==0) && cur_frm.page.current_view_name!=="pos" && !frm.doc.is_return) {
 				frm.add_custom_button(__('Healthcare Services'), function() {
 					get_healthcare_services_to_invoice(frm);
@@ -38,7 +40,36 @@ var get_healthcare_services_to_invoice = function(frm) {
 				options: 'Patient',
 				label: 'Patient',
 				fieldname: "patient",
+                reqd: true,
+            },
+            {
+				fieldtype: 'Link',
+				options: 'Healthcare Service Order Category',
+				label: 'Service Order Category',
+				fieldname: "service_order_category",
 				reqd: true
+            },
+            {
+				fieldtype: 'Link',
+				options: 'Patient Encounter',
+				label: 'Patient Encounter',
+				fieldname: "encounter",
+                reqd: true,
+                description:'Quantity will be calculated only for items which has "Nos" as UoM. You may change as required for each invoice item.',
+				get_query: function(doc) {
+					return {
+						filters: {
+							patient: dialog.get_value("patient"),
+							company: frm.doc.company,
+							docstatus: 1
+						}
+					};
+				}
+            },
+            {
+				fieldtype: 'Check',
+				label: 'Get Prescribed',
+				fieldname: "prescribed",
 			},
 			{ fieldtype: 'Section Break'	},
 			{ fieldtype: 'HTML', fieldname: 'results_area' }
