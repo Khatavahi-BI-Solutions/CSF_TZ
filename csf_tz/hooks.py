@@ -242,7 +242,6 @@ web_include_css = "/assets/csf_tz/css/theme.css"
 # include js in doctype views
 doctype_js = {
 	"Payment Entry" : "csf_tz/payment_entry.js",
-	"Sales Invoice" : "csf_tz/sales_invoice.js",
 	"Sales Order" : "csf_tz/sales_order.js",
 	"Delivery Note" : "csf_tz/delivery_note.js",
 	"Customer" : "csf_tz/customer.js",
@@ -266,6 +265,10 @@ doctype_js = {
 	"Salary Slip": "csf_tz/salary_slip.js",
 	"Patient Appointment": "nhif/api/patient_appointment.js",
 	"Patient": "nhif/api/patient.js",
+	"Sales Invoice" : [
+		"csf_tz/sales_invoice.js",
+		"nhif/api/sales_invoice.js"
+	],
 }
 #csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
