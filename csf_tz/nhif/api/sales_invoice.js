@@ -44,13 +44,6 @@ var get_healthcare_services_to_invoice = function(frm) {
             },
             {
 				fieldtype: 'Link',
-				options: 'Healthcare Service Order Category',
-				label: 'Service Order Category',
-				fieldname: "service_order_category",
-				reqd: true
-            },
-            {
-				fieldtype: 'Link',
 				options: 'Patient Encounter',
 				label: 'Patient Encounter',
 				fieldname: "encounter",
@@ -65,6 +58,14 @@ var get_healthcare_services_to_invoice = function(frm) {
 						}
 					};
 				}
+            },
+            { fieldtype: 'Column Break'	},
+            {
+				fieldtype: 'Link',
+				options: 'Healthcare Service Order Category',
+				label: 'Service Order Category',
+				fieldname: "service_order_category",
+				reqd: true
             },
             {
 				fieldtype: 'Check',
