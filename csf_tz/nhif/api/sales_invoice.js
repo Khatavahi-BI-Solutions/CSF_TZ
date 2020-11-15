@@ -48,7 +48,6 @@ var get_healthcare_services_to_invoice = function(frm) {
 				label: 'Patient Encounter',
 				fieldname: "encounter",
                 reqd: true,
-                description:'Quantity will be calculated only for items which has "Nos" as UoM. You may change as required for each invoice item.',
 				get_query: function(doc) {
 					return {
 						filters: {
@@ -71,6 +70,11 @@ var get_healthcare_services_to_invoice = function(frm) {
 				fieldtype: 'Check',
 				label: 'Get Prescribed',
 				fieldname: "prescribed",
+            },
+            {
+				fieldtype: 'Button',
+				label: 'Get Items',
+				fieldname: "get_items",
 			},
 			{ fieldtype: 'Section Break'	},
 			{ fieldtype: 'HTML', fieldname: 'results_area' }
@@ -82,14 +86,24 @@ var get_healthcare_services_to_invoice = function(frm) {
 	dialog.set_values({
 		'patient': frm.doc.patient
 	});
-	dialog.fields_dict["patient"].df.onchange = () => {
-		var patient = dialog.fields_dict.patient.input.value;
-		if(patient && patient!=selected_patient){
+	// dialog.fields_dict["get_items"].df.onclick = () => {
+    dialog.fields_dict.get_items.input.onclick = function() {
+        var patient = dialog.fields_dict.patient.input.value;
+        var service_order_category = dialog.fields_dict.service_order_category.input.value
+        var encounter = dialog.fields_dict.encounter.input.value
+        var prescribed = dialog.fields_dict.prescribed.input.value
+		if(patient && patient!=selected_patient && service_order_category && encounter){
 			selected_patient = patient;
-			var method = "erpnext.healthcare.utils.get_healthcare_services_to_invoice";
-			var args = {patient: patient, company: frm.doc.company};
+			var method = "csf_tz.nhif.api.healthcare_utils.get_healthcare_services_to_invoice";
+			var args = {
+                patient: patient,
+                company: frm.doc.company,
+                service_order_category: service_order_category,
+                encounter: encounter,
+                prescribed: prescribed,
+            };
 			var columns = (["service", "reference_name", "reference_type"]);
-			get_healthcare_items(frm, true, $results, $placeholder, method, args, columns);
+			get_healthcare_items(frm, true, $results, $placeholder, method, args, columns, service_order_category);
 		}
 		else if(!patient){
 			selected_patient = '';
@@ -115,7 +129,7 @@ var get_healthcare_services_to_invoice = function(frm) {
 };
 
 
-var get_healthcare_items = function(frm, invoice_healthcare_services, $results, $placeholder, method, args, columns) {
+var get_healthcare_items = function(frm, invoice_healthcare_services, $results, $placeholder, method, args, columns, service_order_category) {
 	var me = this;
 	$results.empty();
 	frappe.call({
@@ -125,7 +139,7 @@ var get_healthcare_items = function(frm, invoice_healthcare_services, $results, 
 			if(data.message){
 				$results.append(make_list_row(columns, invoice_healthcare_services));
 				for(let i=0; i<data.message.length; i++){
-					$results.append(make_list_row(columns, invoice_healthcare_services, data.message[i]));
+                    $results.append(make_list_row(columns, invoice_healthcare_services, data.message[i]));
 				}
 			}else {
 				$results.append($placeholder);
