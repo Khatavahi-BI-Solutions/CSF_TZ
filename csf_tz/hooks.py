@@ -284,6 +284,7 @@ doctype_js = {
 		"csf_tz/sales_invoice.js",
 		"nhif/api/sales_invoice.js"
 	],
+	"Patient Encounter": "nhif/api/patient_encounter.js",
 }
 #csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
