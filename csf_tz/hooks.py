@@ -178,6 +178,16 @@ fixtures = [
 		"Healthcare Insurance Claim-insurance_company_item_name",
 		"Healthcare Insurance Claim-insurance_company_item_code",
 		"Healthcare Insurance Claim-section_break_35",
+		"Patient Encounter-section_break_28",
+		"Patient Encounter-patient_encounter_preliminary_diagnosis"
+		"Patient Encounter-column_break_30",
+		"Patient Encounter-patient_encounter_final_diagnosis",
+		"Drug Prescription-medical_code",
+		"Lab Prescription-medical_code",
+		"Procedure Prescription-medical_code",
+		"Radiology Procedure Prescription-medical_code",
+		"Therapy Plan Detail-medical_code",
+		"Diet Recommendation-medical_code",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
@@ -214,6 +224,11 @@ fixtures = [
 		"Patient Appointment-naming_series-hidden",
 		"Patient-main-quick_entry",
 		"Patient Appointment-section_break_19-hidden",
+		"Patient Encounter-diagnosis_in_print-hidden",
+		"Patient Encounter-diagnosis-hidden",
+		"Patient Encounter-physical_examination-hidden",
+		"Patient Encounter-codification-hidden",
+		"Patient Encounter-codification-collapsible",
 	)]]},
 ]
 
