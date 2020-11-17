@@ -179,7 +179,7 @@ fixtures = [
 		"Healthcare Insurance Claim-insurance_company_item_code",
 		"Healthcare Insurance Claim-section_break_35",
 		"Patient Encounter-section_break_28",
-		"Patient Encounter-patient_encounter_preliminary_diagnosis"
+		"Patient Encounter-patient_encounter_preliminary_diagnosis",
 		"Patient Encounter-column_break_30",
 		"Patient Encounter-patient_encounter_final_diagnosis",
 		"Drug Prescription-medical_code",
