@@ -59,3 +59,12 @@ def get_healthcare_service_order_to_invoice(patient, company, service_order_cate
 
 	return services_to_invoice
 
+
+
+@frappe.whitelist()
+def duplicate_encounter(encounter):
+	doc = frappe.get_doc("Patient Encounter", encounter)
+	appointment_doc = frappe.copy_doc(doc)
+	appointment_doc.save()
+	frappe.msgprint(_('Patient Encounter {0} created'.format(appointment_doc.name)), alert=True)
+	return appointment_doc.name

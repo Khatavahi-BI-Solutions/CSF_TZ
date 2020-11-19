@@ -9,6 +9,8 @@ frappe.ui.form.on('Patient Encounter', {
     },
     onload: function (frm) {
         set_medical_code(frm)
+        add_btn_final(frm)
+        duplicate(frm)
     },
     refresh: function(frm) {
 		set_medical_code(frm)
@@ -103,4 +105,32 @@ var validate_medical_code = function (frm) {
             }
         });
     }
+}
+
+var add_btn_final = function(frm) {
+    if (frm.doc.docstatus==1 && frm.doc.encounter_type != 'Final') {
+        frm.add_custom_button(__('Set as Final'), function() {
+            frm.set_value("encounter_type", 'Final');
+        });
+    }
+}
+
+var duplicate = function(frm) {
+    if (frm.doc.docstatus!=0 || frm.doc.encounter_type != 'Final') {
+        return
+    }
+    const doc = frm.doc
+    frm.add_custom_button(__('Duplicate'), function() {
+        frappe.call({
+            method: 'csf_tz.nhif.api.healthcare_utils.duplicate_encounter',
+            args: {
+                'encounter': frm.doc.name
+            },
+            callback: function (data) {
+                if (data.message) {
+                    frappe.set_route('Form', 'Patient Encounter', data.message);
+                }
+            }
+        });
+    });
 }
