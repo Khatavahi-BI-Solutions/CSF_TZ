@@ -64,7 +64,7 @@ def get_healthcare_service_order_to_invoice(patient, company, service_order_cate
 @frappe.whitelist()
 def duplicate_encounter(encounter):
 	doc = frappe.get_doc("Patient Encounter", encounter)
-	if not doc.docstatus==1 or doc.encounter_type != 'Final' or doc.duplicate == 1:
+	if not doc.docstatus==1 or doc.encounter_type == 'Final' or doc.duplicate == 1:
 		return
 	appointment_doc = frappe.copy_doc(doc)
 	appointment_dict = appointment_doc.as_dict()
