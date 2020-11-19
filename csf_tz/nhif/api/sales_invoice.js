@@ -67,7 +67,6 @@ var get_healthcare_services_to_invoice = function(frm) {
 				options: 'Healthcare Service Order Category',
 				label: 'Service Order Category',
 				fieldname: "service_order_category",
-				reqd: true
             },
             {
 				fieldtype: 'Check',
@@ -89,13 +88,12 @@ var get_healthcare_services_to_invoice = function(frm) {
 	dialog.set_values({
 		'patient': frm.doc.patient
 	});
-	// dialog.fields_dict["get_items"].df.onclick = () => {
     dialog.fields_dict.get_items.input.onclick = function() {
         var patient = dialog.fields_dict.patient.input.value;
         var service_order_category = dialog.fields_dict.service_order_category.input.value
         var encounter = dialog.fields_dict.encounter.input.value
-        var prescribed = dialog.fields_dict.prescribed.input.value
-		if(patient && patient!=selected_patient && service_order_category && encounter){
+		var prescribed = dialog.fields_dict.prescribed.last_value
+		if(patient && encounter){
 			selected_patient = patient;
 			var method = "csf_tz.nhif.api.healthcare_utils.get_healthcare_services_to_invoice";
 			var args = {
@@ -104,7 +102,7 @@ var get_healthcare_services_to_invoice = function(frm) {
                 service_order_category: service_order_category,
                 encounter: encounter,
                 prescribed: prescribed,
-            };
+			};
 			var columns = (["service", "reference_name", "reference_type"]);
 			get_healthcare_items(frm, true, $results, $placeholder, method, args, columns, service_order_category);
 		}
