@@ -6631,7 +6631,7 @@
   "in_preview": 0,
   "in_standard_filter": 0,
   "insert_after": "drug_prescription",
-  "label": "Previous Drug Prescription",
+  "label": "Previous Items",
   "length": 0,
   "mandatory_depends_on": null,
   "modified": "2020-11-19 04:12:15.280320",
