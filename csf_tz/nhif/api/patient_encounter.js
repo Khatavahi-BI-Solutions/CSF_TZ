@@ -13,7 +13,8 @@ frappe.ui.form.on('Patient Encounter', {
         duplicate(frm)
     },
     refresh: function(frm) {
-		set_medical_code(frm)
+        set_medical_code(frm)
+        duplicate(frm)
     },
     patient_encounter_preliminary_diagnosis: function(frm) {
 		set_medical_code(frm)
@@ -116,11 +117,11 @@ var add_btn_final = function(frm) {
 }
 
 var duplicate = function(frm) {
-    if (frm.doc.docstatus!=0 || frm.doc.encounter_type != 'Final') {
+    if (frm.doc.docstatus!=1 || frm.doc.encounter_type != 'Final' || frm.doc.duplicate == 1) {
         return
     }
-    const doc = frm.doc
     frm.add_custom_button(__('Duplicate'), function() {
+        frm.doc.save()
         frappe.call({
             method: 'csf_tz.nhif.api.healthcare_utils.duplicate_encounter',
             args: {
