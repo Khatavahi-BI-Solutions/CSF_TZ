@@ -121,7 +121,7 @@ var duplicate = function(frm) {
         return
     }
     frm.add_custom_button(__('Duplicate'), function() {
-        frm.doc.save()
+        frm.save()
         frappe.call({
             method: 'csf_tz.nhif.api.healthcare_utils.duplicate_encounter',
             args: {
