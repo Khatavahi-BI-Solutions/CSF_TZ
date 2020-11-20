@@ -45,7 +45,6 @@ def get_healthcare_service_order_to_invoice(patient, company, encounter, service
 
 	if service_order_category:
 		filters['healthcare_service_order_category'] = service_order_category
-	console(prescribed)
 	if prescribed:
 		filters['prescribed'] = prescribed
 	services_to_invoice = []

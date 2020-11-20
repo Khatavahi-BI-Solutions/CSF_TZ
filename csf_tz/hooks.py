@@ -199,6 +199,7 @@ fixtures = [
 		"Patient Encounter-previous_radiology_procedure_prescription",
 		"Patient Encounter-previous_therapy_plan_detail",
 		"Patient Encounter-previous_diet_recommendation",
+		"Medication-default_comments",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
@@ -240,6 +241,7 @@ fixtures = [
 		"Patient Encounter-physical_examination-hidden",
 		"Patient Encounter-codification-hidden",
 		"Patient Encounter-codification-collapsible",
+		"Drug Prescription-comment-fetch_from",
 	)]]},
 ]
 
