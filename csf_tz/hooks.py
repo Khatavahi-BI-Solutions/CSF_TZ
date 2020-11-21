@@ -200,6 +200,27 @@ fixtures = [
 		"Patient Encounter-previous_therapy_plan_detail",
 		"Patient Encounter-previous_diet_recommendation",
 		"Medication-default_comments",
+		"Lab Test Template-lab_routine_normals",
+		"Lab Test Template-m_text",
+		"Lab Test Template-column_break_26",
+		"Lab Test Template-f_text",
+		"Lab Test Template-column_break_30",
+		"Lab Test Template-c_min_range",
+		"Lab Test Template-c_max_range",
+		"Lab Test Template-c_text",
+		"Lab Test Template-column_break_34",
+		"Lab Test Template-i_min_range",
+		"Lab Test Template-i_max_range",
+		"Lab Test Template-i_text",
+		"Lab Test Template-m_min_range",
+		"Lab Test Template-m_max_range",
+		"Lab Test Template-f_min_range",
+		"Lab Test Template-f_max_range",
+		"Normal Test Result-detailed_normal_range",
+		"Normal Test Result-result_status",
+		"Normal Test Result-min_normal",
+		"Normal Test Result-max_normal",
+		"Normal Test Result-text_normal"
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
@@ -298,6 +319,7 @@ doctype_js = {
 		"nhif/api/sales_invoice.js"
 	],
 	"Patient Encounter": "nhif/api/patient_encounter.js",
+	"Lab Test": "nhif/api/lab_test.js",
 }
 #csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
