@@ -221,6 +221,7 @@ fixtures = [
 		"Normal Test Result-min_normal",
 		"Normal Test Result-max_normal",
 		"Normal Test Result-text_normal"
+		"Healthcare Insurance Claim-order_encounter",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
@@ -451,6 +452,9 @@ doc_events = {
 	},
 	"Patient": {
 		"validate":"csf_tz.nhif.api.patient.validate",
+	},
+	"Healthcare Insurance Claim": {
+		"before_insert":"csf_tz.nhif.api.insurance_claim.set_patient_encounter",
 	},
 }
 
