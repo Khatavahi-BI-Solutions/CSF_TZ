@@ -264,6 +264,8 @@ fixtures = [
 		"Patient Encounter-codification-hidden",
 		"Patient Encounter-codification-collapsible",
 		"Drug Prescription-comment-fetch_from",
+		"Healthcare Service Insurance Coverage-is_active-allow_on_submit",
+		"Healthcare Service Insurance Coverage-end_date-Allow on Submit",
 	)]]},
 ]
 

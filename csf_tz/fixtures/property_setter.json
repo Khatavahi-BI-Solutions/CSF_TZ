@@ -678,5 +678,39 @@
   "property_type": "Small Text",
   "row_name": null,
   "value": "drug_code.default_comments"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Healthcare Service Insurance Coverage",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "end_date",
+  "modified": "2020-11-25 02:44:03.653890",
+  "name": "Healthcare Service Insurance Coverage-end_date-Allow on Submit",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "property": "allow_on_submit",
+  "property_type": "Check",
+  "row_name": null,
+  "value": "1"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Healthcare Service Insurance Coverage",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "is_active",
+  "modified": "2020-11-25 02:46:16.233370",
+  "name": "Healthcare Service Insurance Coverage-is_active-allow_on_submit",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "property": "allow_on_submit",
+  "property_type": "Check",
+  "row_name": null,
+  "value": "1"
  }
 ]
