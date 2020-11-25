@@ -222,6 +222,11 @@ fixtures = [
 		"Normal Test Result-max_normal",
 		"Normal Test Result-text_normal"
 		"Healthcare Insurance Claim-order_encounter",
+		"Drug Prescription-override_subscription",
+		"Lab Prescription-override_subscription",
+		"Radiology Procedure Prescription-override_subscription",
+		"Procedure Prescription-override_subscription",
+		"Therapy Plan Detail-override_subscription"
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
@@ -457,6 +462,9 @@ doc_events = {
 	},
 	"Healthcare Insurance Claim": {
 		"before_insert":"csf_tz.nhif.api.insurance_claim.set_patient_encounter",
+	},
+	"Patient Encounter": {
+		"validate":"csf_tz.nhif.api.patient_encounter.validate",
 	},
 }
 

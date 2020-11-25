@@ -5,7 +5,6 @@
 from __future__ import unicode_literals 
 import frappe
 from frappe import _
-from csf_tz import console
 
 
 def set_patient_encounter(doc, method):
