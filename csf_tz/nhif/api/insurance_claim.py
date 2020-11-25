@@ -12,3 +12,5 @@ def set_patient_encounter(doc, method):
         reference_doc = frappe.get_doc(doc.reference_dt , doc.reference_dn)
         if reference_doc.parenttype and reference_doc.parenttype == "Patient Encounter":
             doc.order_encounter = reference_doc.parent
+        elif doc.reference_dt == "Healthcare Service Order" :
+            doc.order_encounter = reference_doc.order_group
