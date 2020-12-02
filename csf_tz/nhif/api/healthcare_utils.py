@@ -65,7 +65,7 @@ def get_healthcare_service_order_to_invoice(patient, company, encounter, service
 				income_account = get_income_account(service.ordered_by, company)
 
 			services_to_invoice.append({
-				'reference_type': 'Patient Encounter',
+				'reference_type': 'Healthcare Service Order',
 				'reference_name': service.name,
 				'service': service_item,
 				'rate': practitioner_charge,
