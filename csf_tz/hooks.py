@@ -273,7 +273,8 @@ fixtures = [
 		"Healthcare Service Insurance Coverage-is_active-allow_on_submit",
 		"Healthcare Service Insurance Coverage-end_date-Allow on Submit",
 		"Radiology Examination-appointment-hidden",
-		"Lab Test-insurance_section-hidden"
+		"Lab Test-insurance_section-hidden",
+		"Radiology Examination-insurance_section-hidden",
 	)]]},
 ]
 
@@ -401,6 +402,7 @@ doc_events = {
 			'csf_tz.custom_api.check_validate_delivery_note',
 			'csf_tz.custom_api.validate_items_remaining_qty',
 			'csf_tz.custom_api.calculate_price_reduction',
+			"csf_tz.nhif.api.sales_invoice.create_healthcare_docs",
 			],
 		'on_cancel': 'csf_tz.custom_api.check_cancel_delivery_note',
 	},

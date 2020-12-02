@@ -32,13 +32,13 @@ def create_healthcare_docs(doc, method):
             if item.reference_dt == "Healthcare Service Order":
                 hso_doc = frappe.get_doc("Healthcare Service Order", item.reference_dn)
                 if hso_doc.order_doctype == "Lab Test Template":
-                    create_lab_test(item, hso_doc)
+                    create_lab_test(hso_doc)
                 elif hso_doc.order_doctype == "Radiology Examination Template":
-                    create_radiology_examination(item, hso_doc)
+                    create_radiology_examination(hso_doc)
 
 
 
-def create_lab_test(item, hso_doc):
+def create_lab_test(hso_doc):
     if not hso_doc.order:
         return
     ltt_doc = frappe.get_doc("Lab Test Template", hso_doc.order)
@@ -63,5 +63,18 @@ def create_lab_test(item, hso_doc):
 
 
 
-def create_radiology_examination(item, hso_doc):
-    pass
+def create_radiology_examination(hso_doc):
+    if not hso_doc.order:
+        return
+
+    doc = frappe.new_doc('Radiology Examination')
+    doc.patient = hso_doc.patient
+    doc.company = hso_doc.company
+    doc.radiology_examination_template = hso_doc.order
+    doc.practitioner = hso_doc.ordered_by
+    doc.source = hso_doc.source
+    doc.medical_department = frappe.get_value("Radiology Examination Template", hso_doc.order, "medical_department")
+
+    doc.save(ignore_permissions=True)
+    if doc.get('name'):
+      frappe.msgprint(_('Radiology Examination {0} created successfully.').format(frappe.bold(doc.name)), alert=True)
