@@ -5,25 +5,6 @@
 from __future__ import unicode_literals 
 import frappe
 from frappe import _
-# from frappe.utils import nowdate, get_year_start, getdate
-# import datetime
-
-
-def create_therapy_plan(encounter):
-  if len(encounter.therapies):
-    doc = frappe.new_doc('Therapy Plan')
-    doc.patient = encounter.patient
-    doc.start_date = encounter.encounter_date
-    for entry in encounter.therapies:
-      doc.append('therapy_plan_details', {
-        'therapy_type': entry.therapy_type,
-        'no_of_sessions': entry.no_of_sessions
-      })
-    doc.save(ignore_permissions=True)
-    if doc.get('name'):
-      encounter.db_set('therapy_plan', doc.name)
-      frappe.msgprint(_('Therapy Plan {0} created successfully.').format(frappe.bold(doc.name)), alert=True)
-
 
 
 def create_healthcare_docs(doc, method):
