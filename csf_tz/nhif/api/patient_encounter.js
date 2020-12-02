@@ -25,6 +25,25 @@ frappe.ui.form.on('Patient Encounter', {
 
 });
 
+
+frappe.ui.form.on('Codification Table', {
+    patient_encounter_preliminary_diagnosis_add: function (frm) {
+        set_medical_code(frm)
+    },
+    patient_encounter_preliminary_diagnosis_remove: function (frm) {
+        set_medical_code(frm)
+    },
+    patient_encounter_final_diagnosis_add: function (frm) {
+        set_medical_code(frm)
+    },
+    patient_encounter_final_diagnosis_remove: function (frm) {
+        set_medical_code(frm)
+    },
+    medical_code(frm, cdt, cdn) {
+        set_medical_code(frm)
+    }
+});
+
 var get_preliminary_diagnosis = function (frm){
     const diagnosis_list = [];
     frm.doc.patient_encounter_preliminary_diagnosis.forEach(element => {
@@ -42,22 +61,24 @@ var get_final_diagnosis = function (frm){
 }
 
 var set_medical_code = function (frm) {
-    frappe.meta.get_docfield("Drug Prescription", "medical_code", frm.doc.name).options = get_final_diagnosis(frm);
+    const final_diagnosis = get_final_diagnosis(frm)
+    const preliminary_diagnosis = get_preliminary_diagnosis(frm)
+    frappe.meta.get_docfield("Drug Prescription", "medical_code", frm.doc.name).options = final_diagnosis;
     refresh_field("drug_prescription");
 
-    frappe.meta.get_docfield("Lab Prescription", "medical_code", frm.doc.name).options = get_preliminary_diagnosis(frm);
+    frappe.meta.get_docfield("Lab Prescription", "medical_code", frm.doc.name).options = preliminary_diagnosis
     refresh_field("lab_test_prescription");
 
-    frappe.meta.get_docfield("Procedure Prescription", "medical_code", frm.doc.name).options = get_final_diagnosis(frm);
+    frappe.meta.get_docfield("Procedure Prescription", "medical_code", frm.doc.name).options = final_diagnosis;
     refresh_field("procedure_prescription");
 
-    frappe.meta.get_docfield("Radiology Procedure Prescription", "medical_code", frm.doc.name).options = get_preliminary_diagnosis(frm);
+    frappe.meta.get_docfield("Radiology Procedure Prescription", "medical_code", frm.doc.name).options = preliminary_diagnosis;
     refresh_field("radiology_procedure_prescription");
 
-    frappe.meta.get_docfield("Therapy Plan Detail", "medical_code", frm.doc.name).options = get_final_diagnosis(frm);
+    frappe.meta.get_docfield("Therapy Plan Detail", "medical_code", frm.doc.name).options = final_diagnosis;
     refresh_field("therapies");
 
-    frappe.meta.get_docfield("Diet Recommendation", "medical_code", frm.doc.name).options = get_final_diagnosis(frm);
+    frappe.meta.get_docfield("Diet Recommendation", "medical_code", frm.doc.name).options = final_diagnosis;
     refresh_field("diet_recommendation");
 
     frm.refresh_fields();
