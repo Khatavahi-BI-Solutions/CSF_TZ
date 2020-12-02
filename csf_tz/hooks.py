@@ -226,7 +226,8 @@ fixtures = [
 		"Lab Prescription-override_subscription",
 		"Radiology Procedure Prescription-override_subscription",
 		"Procedure Prescription-override_subscription",
-		"Therapy Plan Detail-override_subscription"
+		"Therapy Plan Detail-override_subscription",
+		"Patient Encounter-section_break_52",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
@@ -271,6 +272,8 @@ fixtures = [
 		"Drug Prescription-comment-fetch_from",
 		"Healthcare Service Insurance Coverage-is_active-allow_on_submit",
 		"Healthcare Service Insurance Coverage-end_date-Allow on Submit",
+		"Radiology Examination-appointment-hidden",
+		"Lab Test-insurance_section-hidden"
 	)]]},
 ]
 
@@ -392,6 +395,7 @@ doc_events = {
 			"csf_tz.custom_api.create_delivery_note",
 			'csf_tz.custom_api.check_submit_delivery_note',
 			'csf_tz.custom_api.make_withholding_tax_gl_entries_for_sales',
+			"csf_tz.nhif.api.sales_invoice.create_healthcare_docs",
 			],
 		'validate': [
 			'csf_tz.custom_api.check_validate_delivery_note',

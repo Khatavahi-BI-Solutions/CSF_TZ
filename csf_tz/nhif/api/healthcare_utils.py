@@ -110,6 +110,7 @@ def duplicate_encounter(encounter):
 	if not appointment_dict.get("reference_encounter"):
 		appointment_dict["reference_encounter"] = doc.name
 	appointment_dict["from_encounter"] = doc.name
+	appointment_dict["encounter_type"] = "Ongoing"
 	appointment_doc = frappe.get_doc(appointment_dict)
 	appointment_doc.save()
 	frappe.msgprint(_('Patient Encounter {0} created'.format(appointment_doc.name)), alert=True)
