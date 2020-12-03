@@ -88,42 +88,42 @@ var validate_medical_code = function (frm) {
     if (frm.doc.drug_prescription) {
         frm.doc.drug_prescription.forEach(element => {
             if (!get_final_diagnosis(frm).includes(element.medical_code)) {
-                frappe.throw(__(`The medical code ${element.medical_code} hase been removed but is already used in the order 'Drug Prescription' line item ${element.idx}`))
+                frappe.throw(__(`The medical code is not set in 'Drug Prescription' line item ${element.idx}`))
             }
         });
     }
     if (frm.doc.lab_test_prescription) {
         frm.doc.lab_test_prescription.forEach(element => {
             if (!get_preliminary_diagnosis(frm).includes(element.medical_code)) {
-                frappe.throw(__(`The medical code ${element.medical_code} hase been removed but is already used in the order 'Lab Prescription' line item ${element.idx}`))
+                frappe.throw(__(`The medical code is not set in 'Lab Prescription' line item ${element.idx}`))
             }
         });
     }
     if (frm.doc.procedure_prescription) {
         frm.doc.procedure_prescription.forEach(element => {
             if (!get_final_diagnosis(frm).includes(element.medical_code)) {
-                frappe.throw(__(`The medical code ${element.medical_code} hase been removed but is already used in the order 'Procedure Prescription' line item ${element.idx}`))
+                frappe.throw(__(`The medical code is not set in 'Procedure Prescription' line item ${element.idx}`))
             }
         });
     }
     if (frm.doc.radiology_procedure_prescription) {
         frm.doc.radiology_procedure_prescription.forEach(element => {
             if (!get_preliminary_diagnosis(frm).includes(element.medical_code)) {
-                frappe.throw(__(`The medical code ${element.medical_code} hase been removed but is already used in the order 'Radiology Procedure Prescription' line item ${element.idx}`))
+                frappe.throw(__(`The medical code is not set in 'Radiology Procedure Prescription' line item ${element.idx}`))
             }
         });
     }
     if (frm.doc.procedure_prescription) {
         frm.doc.procedure_prescription.forEach(element => {
             if (!get_final_diagnosis(frm).includes(element.medical_code)) {
-                frappe.throw(__(`The medical code ${element.medical_code} hase been removed but is already used in the order 'Therapy Plan Detail' line item ${element.idx}`))
+                frappe.throw(__(`The medical code is not set in 'Therapy Plan Detail' line item ${element.idx}`))
             }
         });
     }
     if (frm.doc.diet_recommendation) {
         frm.doc.diet_recommendation.forEach(element => {
             if (!get_final_diagnosis(frm).includes(element.medical_code)) {
-                frappe.throw(__(`The medical code ${element.medical_code} hase been removed but is already used in the order 'Diet Recommendation' line item ${element.idx}`))
+                frappe.throw(__(`The medical code is not set in 'Diet Recommendation' line item ${element.idx}`))
             }
         });
     }
