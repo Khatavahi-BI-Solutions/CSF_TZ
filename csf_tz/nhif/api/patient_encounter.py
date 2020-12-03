@@ -69,3 +69,44 @@ def get_year_end(dt, as_str=False):
     DATE_FORMAT = "%Y-%m-%d"
     date = datetime.date(dt.year, 12, 31)
     return date.strftime(DATE_FORMAT) if as_str else date
+
+
+@frappe.whitelist()
+def duplicate_encounter(encounter):
+	doc = frappe.get_doc("Patient Encounter", encounter)
+	if not doc.docstatus==1 or doc.encounter_type == 'Final' or doc.duplicate == 1:
+		return
+	encounter_doc = frappe.copy_doc(doc)
+	encounter_dict = encounter_doc.as_dict()
+	child_tables = {
+		"drug_prescription": "previous_drug_prescription",
+		"lab_test_prescription": "previous_lab_prescription",
+		"procedure_prescription": "previous_procedure_prescription",
+		"radiology_procedure_prescription": "previous_radiology_procedure_prescription",
+		"therapies": "previous_therapy_plan_detail",
+		"diet_recommendation": "previous_diet_recommendation"
+	}
+
+	fields_to_clear = ['name', 'owner', 'creation', 'modified', 'modified_by','docstatus', 'amended_from', 'amendment_date', 'parentfield', 'parenttype']
+
+	for key ,value in child_tables.items():
+		cur_table = encounter_dict.get(key)
+		if not cur_table:
+			continue
+		for row in cur_table:
+			new_row = row
+			for fieldname in (fields_to_clear):
+				new_row[fieldname] = None
+			encounter_dict[value].append(new_row)
+		encounter_dict[key] = []
+	encounter_dict["duplicate"] = 0
+	encounter_dict["encounter_type"] = "Ongoing"
+	if not encounter_dict.get("reference_encounter"):
+		encounter_dict["reference_encounter"] = doc.name
+	encounter_dict["from_encounter"] = doc.name
+	encounter_doc = frappe.get_doc(encounter_dict)
+	encounter_doc.save()
+	frappe.msgprint(_('Patient Encounter {0} created'.format(encounter_doc.name)), alert=True)
+	doc.duplicate = 1
+	doc.save()
+	return encounter_doc.name
