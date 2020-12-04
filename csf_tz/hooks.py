@@ -467,7 +467,10 @@ doc_events = {
 		"validate":"csf_tz.nhif.api.patient.validate",
 	},
 	"Healthcare Insurance Claim": {
-		"before_insert":"csf_tz.nhif.api.insurance_claim.set_patient_encounter",
+		"before_insert":[
+			"csf_tz.nhif.api.insurance_claim.set_patient_encounter",
+			"csf_tz.nhif.api.insurance_claim.set_price",
+		]
 	},
 	"Patient Encounter": {
 		"validate":"csf_tz.nhif.api.patient_encounter.validate",
