@@ -24,7 +24,6 @@ frappe.ui.form.on('Patient', {
             callback: function (data) {
                 if (data.message) {
                     const card = data.message
-                    console.table(card)
                     if (!frm.is_new()) {
                         const d = new frappe.ui.Dialog({
                             title: "Patient's information",
