@@ -276,6 +276,9 @@ fixtures = [
 		"Radiology Examination-appointment-hidden",
 		"Lab Test-insurance_section-hidden",
 		"Radiology Examination-insurance_section-hidden",
+		"Drug Prescription-dosage-fetch_if_empty",
+		"Drug Prescription-period-fetch_if_empty",
+		"Drug Prescription-dosage_form-fetch_if_empty"
 	)]]},
 ]
 
