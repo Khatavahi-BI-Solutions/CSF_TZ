@@ -16,6 +16,7 @@ def set_patient_encounter(doc, method):
         elif doc.reference_dt == "Healthcare Service Order" :
             doc.order_encounter = reference_doc.order_group
 
+
 def set_price(doc, method):
     price_list = None
     price_list_rate = None
