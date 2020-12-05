@@ -11,11 +11,26 @@ import datetime
 
 def validate(doc, method):
     insurance_subscription = doc.insurance_subscription
+    child_tables = {
+		"drug_prescription": "drug_code",
+		"lab_test_prescription": "lab_test_code",
+		"procedure_prescription": "procedure",
+		"radiology_procedure_prescription": "radiology_examination_template",
+		"therapies": "therapy_type",
+		# "diet_recommendation": "diet_plan" dosent have Healthcare Service Insurance Coverage
+	}
+    warehouse = get_warehouse(doc.healthcare_service_unit)
+    for key ,value in child_tables.items():
+        table = doc.get(key)
+        for row in table:
+            if not row.get("prescribe"):
+                validate_stock_item(row.get(value), row.get("quantity") or 1, warehouse)
+
     if not insurance_subscription:
         return
+
     if not doc.healthcare_service_unit:
         frappe.throw(_("Healthcare Service Unit not set"))
-    warehouse = get_warehouse(doc.healthcare_service_unit)
     healthcare_insurance_coverage_plan = frappe.get_value("Healthcare Insurance Subscription", insurance_subscription, "healthcare_insurance_coverage_plan")
     if not healthcare_insurance_coverage_plan:
         frappe.throw(_("Healthcare Insurance Coverage Plan is Not defiend"))
@@ -34,15 +49,6 @@ def validate(doc, method):
     if len(hsic_list) > 0:
         for i in hsic_list:
             items_list.append(i.healthcare_service_template)
-
-    child_tables = {
-		"drug_prescription": "drug_code",
-		"lab_test_prescription": "lab_test_code",
-		"procedure_prescription": "procedure",
-		"radiology_procedure_prescription": "radiology_examination_template",
-		"therapies": "therapy_type",
-		# "diet_recommendation": "diet_plan" dosent have Healthcare Service Insurance Coverage
-	}
 
     for key ,value in child_tables.items():
         table = doc.get(key)
@@ -64,9 +70,7 @@ def validate(doc, method):
                 })
                 if maximum_number_of_claims > len(claims_count):
                     frappe.throw(_("Maximum Number of Claims for {0} per year is exceeded").format(row.get(value)))
-            validate_stock_item(row.get(value), row.get("qty") or 1, warehouse)
-
-
+            
 
 def get_year_end(dt, as_str=False):
     dt = getdate(dt)
@@ -127,7 +131,7 @@ def get_item_info(medication_name):
     data = {}
     item_code = frappe.get_value("Medication", medication_name, "item_code")
     if item_code:
-        is_stock = frappe.get_value("Item", item_code, "is_stock")
+        is_stock = frappe.get_value("Item", item_code, "is_stock_item")
         data = {
             "item_code": item_code,
             "is_stock": is_stock
@@ -148,13 +152,13 @@ def get_stock_availability(item_code, warehouse):
 @frappe.whitelist()
 def validate_stock_item(medication_name, qty, warehouse=None, healthcare_service_unit=None):
     item_info = get_item_info(medication_name)
-    if not warehouse and healthcare_service_unit:
-        warehouse = get_warehouse(healthcare_service_unit)
-    else:
+    if not warehouse and not healthcare_service_unit:
         frappe.throw(_("Warehouse is missing"))
+    elif not warehouse and healthcare_service_unit:
+        warehouse = get_warehouse(healthcare_service_unit)
     if item_info.get("is_stock") and item_info.get("item_code"):
        stock_qty = get_stock_availability(item_info.get("item_code"), warehouse)
-       if qty > stock_qty:
+       if float(qty) > float(stock_qty):
            frappe.throw(_("The quantity required for the item {0} is insufficient").format(medication_name))
            return False
     

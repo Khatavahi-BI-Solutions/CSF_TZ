@@ -229,6 +229,11 @@ fixtures = [
 		"Therapy Plan Detail-override_subscription",
 		"Patient Encounter-section_break_52",
 		"Patient Encounter-healthcare_service_unit",
+		"Lab Prescription-prescribe",
+		"Radiology Procedure Prescription-prescribe",
+		"Procedure Prescription-prescribe",
+		"Drug Prescription-prescribe",
+		"Therapy Plan Detail-prescribe",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
