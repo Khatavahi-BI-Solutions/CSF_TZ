@@ -46,18 +46,22 @@ frappe.ui.form.on('Codification Table', {
 
 var get_preliminary_diagnosis = function (frm){
     const diagnosis_list = [];
-    frm.doc.patient_encounter_preliminary_diagnosis.forEach(element => {
-        diagnosis_list.push(element.medical_code)
-    });
-    return diagnosis_list
+    if (frm.doc.patient_encounter_preliminary_diagnosis) {
+        frm.doc.patient_encounter_preliminary_diagnosis.forEach(element => {
+            diagnosis_list.push(element.medical_code)
+        });
+        return diagnosis_list
+    }
 }
 
 var get_final_diagnosis = function (frm){
     const diagnosis_list = [];
-    frm.doc.patient_encounter_final_diagnosis.forEach(element => {
-        diagnosis_list.push(element.medical_code)
-    });
-    return diagnosis_list
+    if (frm.doc.patient_encounter_final_diagnosis) {
+        frm.doc.patient_encounter_final_diagnosis.forEach(element => {
+            diagnosis_list.push(element.medical_code)
+        });
+       return diagnosis_list
+    }
 }
 
 var set_medical_code = function (frm) {
@@ -138,7 +142,7 @@ var add_btn_final = function(frm) {
 }
 
 var duplicate = function(frm) {
-    if (frm.doc.docstatus!=1 || frm.doc.encounter_type == 'Final' || frm.doc.duplicate == 1) {
+    if (frm.doc.docstatus!=1 || frm.doc.encounter_type == 'Final' || frm.doc.duplicate == 1 || frm.is_new) {
         return
     }
     frm.add_custom_button(__('Duplicate'), function() {
@@ -161,15 +165,25 @@ frappe.ui.form.on('Lab Prescription', {
     lab_test_code: function(frm, cdt, cdn) {
         let row = frappe.get_doc(cdt, cdn);
         if (row.prescribe || !row.lab_test_code) {return}
-        validate_sotck_item(frm, row.lab_test_code)
+        validate_stock_item(frm, row.lab_test_code)
+    },
+    prescribe: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.prescribe || !row.lab_test_code) {return}
+        validate_stock_item(frm, row.lab_test_code)
     },
 });
 
 frappe.ui.form.on('Radiology Procedure Prescription', {
-    procedure: function(frm, cdt, cdn) {
+    radiology_examination_template: function(frm, cdt, cdn) {
         let row = frappe.get_doc(cdt, cdn);
-        if (row.prescribe || !row.procedure) {return}
-        validate_sotck_item(frm, row.radiology_examination_template)
+        if (row.prescribe || !row.radiology_examination_template) {return}
+        validate_stock_item(frm, row.radiology_examination_template)
+    },
+    prescribe: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.prescribe || !row.radiology_examination_template) {return}
+        validate_stock_item(frm, row.radiology_examination_template)
     },
 });
 
@@ -177,7 +191,12 @@ frappe.ui.form.on('Procedure Prescription', {
     procedure: function(frm, cdt, cdn) {
         let row = frappe.get_doc(cdt, cdn);
         if (row.prescribe || !row.procedure) {return}
-        validate_sotck_item(frm, row.procedure)
+        validate_stock_item(frm, row.procedure)
+    },
+    prescribe: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.prescribe || !row.procedure) {return}
+        validate_stock_item(frm, row.procedure)
     },
 });
 
@@ -185,12 +204,17 @@ frappe.ui.form.on('Drug Prescription', {
     drug_code: function(frm, cdt, cdn) {
         let row = frappe.get_doc(cdt, cdn);
         if (row.prescribe || !row.drug_code) {return}
-        validate_sotck_item(frm, row.drug_code, row.quantity)
+        validate_stock_item(frm, row.drug_code, row.quantity)
+    },
+    prescribe: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.prescribe || !row.drug_code) {return}
+        validate_stock_item(frm, row.drug_code, row.quantity)
     },
     quantity: function(frm, cdt, cdn) {
         let row = frappe.get_doc(cdt, cdn);
         if (row.prescribe || !row.drug_code) {return}
-        validate_sotck_item(frm, row.drug_code, row.quantity)
+        validate_stock_item(frm, row.drug_code, row.quantity)
     },
 });
 
@@ -198,12 +222,17 @@ frappe.ui.form.on('Therapy Plan Detail', {
     therapy_type: function(frm, cdt, cdn) {
         let row = frappe.get_doc(cdt, cdn);
         if (row.prescribe || !row.therapy_type) {return}
-        validate_sotck_item(frm, row.therapy_type)
+        validate_stock_item(frm, row.therapy_type)
+    },
+    prescribe: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.prescribe || !row.therapy_type) {return}
+        validate_stock_item(frm, row.therapy_type)
     },
 });
 
 
-var validate_sotck_item = function(frm, medication_name, qty=1) {
+var validate_stock_item = function(frm, medication_name, qty=1) {
     frappe.call({
         method: 'csf_tz.nhif.api.patient_encounter.validate_stock_item',
         args: {
