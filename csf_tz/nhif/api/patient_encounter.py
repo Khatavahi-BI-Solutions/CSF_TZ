@@ -13,6 +13,9 @@ def validate(doc, method):
     insurance_subscription = doc.insurance_subscription
     if not insurance_subscription:
         return
+    if not doc.healthcare_service_unit:
+        frappe.throw(_("Healthcare Service Unit not set"))
+    warehouse = get_warehouse(doc.healthcare_service_unit)
     healthcare_insurance_coverage_plan = frappe.get_value("Healthcare Insurance Subscription", insurance_subscription, "healthcare_insurance_coverage_plan")
     if not healthcare_insurance_coverage_plan:
         frappe.throw(_("Healthcare Insurance Coverage Plan is Not defiend"))
@@ -61,6 +64,7 @@ def validate(doc, method):
                 })
                 if maximum_number_of_claims > len(claims_count):
                     frappe.throw(_("Maximum Number of Claims for {0} per year is exceeded").format(row.get(value)))
+            validate_stock_item(row.get(value), row.get("qty") or 1, warehouse)
 
 
 
@@ -110,3 +114,48 @@ def duplicate_encounter(encounter):
 	doc.duplicate = 1
 	doc.save()
 	return encounter_doc.name
+
+
+def get_warehouse(healthcare_service_unit):
+    warehouse = frappe.get_value("Healthcare Service Unit", healthcare_service_unit, "warehouse")
+    if not warehouse:
+        frappe.throw(_("Warehouse is missing in Healthcare Service Unit"))
+    return warehouse
+
+
+def get_item_info(medication_name):
+    data = {}
+    item_code = frappe.get_value("Medication", medication_name, "item_code")
+    if item_code:
+        is_stock = frappe.get_value("Item", item_code, "is_stock")
+        data = {
+            "item_code": item_code,
+            "is_stock": is_stock
+        }
+    return data
+
+
+def get_stock_availability(item_code, warehouse):
+    latest_sle = frappe.db.sql("""select sum(actual_qty) as  actual_qty
+		from `tabStock Ledger Entry` 
+		where item_code = %s and warehouse = %s
+		limit 1""", (item_code, warehouse), as_dict=1)
+
+    sle_qty = latest_sle[0].actual_qty or 0 if latest_sle else 0
+    return sle_qty
+
+
+@frappe.whitelist()
+def validate_stock_item(medication_name, qty, warehouse=None, healthcare_service_unit=None):
+    item_info = get_item_info(medication_name)
+    if not warehouse and healthcare_service_unit:
+        warehouse = get_warehouse(healthcare_service_unit)
+    else:
+        frappe.throw(_("Warehouse is missing"))
+    if item_info.get("is_stock") and item_info.get("item_code"):
+       stock_qty = get_stock_availability(item_info.get("item_code"), warehouse)
+       if qty > stock_qty:
+           frappe.throw(_("The quantity required for the item {0} is insufficient").format(medication_name))
+           return False
+    
+    return True
