@@ -36,7 +36,7 @@ def set_price(doc, method):
         "Healthcare Insurance Company", doc.insurance_company, "default_price_list")
     if not price_list:
             frappe.throw(_("Please set Price List in Healthcare Insurance Coverage Plan"))
-    price_list_rate = get_item_price(doc.service_item, price_list, doc.company)
+    price_list_rate = get_item_price(doc.service_item, price_list, doc.insurance_company)
     if price_list_rate == 0:
         frappe.throw(_("Please set Price List for item: {0}").format(doc.service_item))
     doc.price_list_rate = price_list_rate
