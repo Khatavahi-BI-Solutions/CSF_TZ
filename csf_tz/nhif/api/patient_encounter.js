@@ -156,3 +156,65 @@ var duplicate = function(frm) {
         });
     });
 }
+
+frappe.ui.form.on('Lab Prescription', {
+    lab_test_code: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.prescribe || !row.lab_test_code) {return}
+        validate_sotck_item(frm, row.lab_test_code)
+    },
+});
+
+frappe.ui.form.on('Radiology Procedure Prescription', {
+    procedure: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.prescribe || !row.procedure) {return}
+        validate_sotck_item(frm, row.radiology_examination_template)
+    },
+});
+
+frappe.ui.form.on('Procedure Prescription', {
+    procedure: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.prescribe || !row.procedure) {return}
+        validate_sotck_item(frm, row.procedure)
+    },
+});
+
+frappe.ui.form.on('Drug Prescription', {
+    drug_code: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.prescribe || !row.drug_code) {return}
+        validate_sotck_item(frm, row.drug_code, row.quantity)
+    },
+    quantity: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.prescribe || !row.drug_code) {return}
+        validate_sotck_item(frm, row.drug_code, row.quantity)
+    },
+});
+
+frappe.ui.form.on('Therapy Plan Detail', {
+    therapy_type: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.prescribe || !row.therapy_type) {return}
+        validate_sotck_item(frm, row.therapy_type)
+    },
+});
+
+
+var validate_sotck_item = function(frm, medication_name, qty=1) {
+    frappe.call({
+        method: 'csf_tz.nhif.api.patient_encounter.validate_stock_item',
+        args: {
+            'medication_name': medication_name,
+            'qty': qty,
+            'healthcare_service_unit': frm.doc.healthcare_service_unit
+        },
+        callback: function (data) {
+            if (data.message) {
+                // console.log(data.message)
+            }
+        }
+    });
+};
