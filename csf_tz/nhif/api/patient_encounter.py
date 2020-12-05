@@ -56,7 +56,7 @@ def validate(doc, method):
             if row.override_subscription:
                 continue
             if row.get(value) not in items_list:
-                frappe.throw(_("{0} not covred in Healthcare Insurance Coverage Plan").format(row.get(value)))
+                frappe.throw(_("{0} not covered in Healthcare Insurance Coverage Plan").format(row.get(value)))
             else:
                 maximum_number_of_claims = next(i for i in hsic_list if i["healthcare_service_template"] == row.get(value)).get("maximum_number_of_claims")
                 if maximum_number_of_claims == 0:
