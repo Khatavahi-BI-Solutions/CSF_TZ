@@ -483,6 +483,9 @@ doc_events = {
 	"Patient Encounter": {
 		"validate":"csf_tz.nhif.api.patient_encounter.validate",
 	},
+	"Healthcare Service Order": {
+		"before_insert": "csf_tz.nhif.api.service_order.set_missing_values"
+	},
 }
 
 # Scheduled Tasks

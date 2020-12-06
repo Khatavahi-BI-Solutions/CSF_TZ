@@ -13,6 +13,8 @@ def create_healthcare_docs(doc, method):
             if item.reference_dt == "Healthcare Service Order":
                 hso_doc = frappe.get_doc(
                     "Healthcare Service Order", item.reference_dn)
+                if hso_doc.insurance_subscription and hso_doc.prescribed:
+                    return
                 if hso_doc.order_doctype == "Lab Test Template":
                     create_lab_test(hso_doc)
                 elif hso_doc.order_doctype == "Radiology Examination Template":
@@ -47,7 +49,6 @@ def create_lab_test(hso_doc):
 def create_radiology_examination(hso_doc):
     if not hso_doc.order:
         return
-
     doc = frappe.new_doc('Radiology Examination')
     doc.patient = hso_doc.patient
     doc.company = hso_doc.company
