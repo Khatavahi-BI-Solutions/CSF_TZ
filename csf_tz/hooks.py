@@ -234,6 +234,10 @@ fixtures = [
 		"Procedure Prescription-prescribe",
 		"Drug Prescription-prescribe",
 		"Therapy Plan Detail-prescribe",
+		"Delivery Note Item-reference_name",
+		"Delivery Note Item-reference_doctype",
+		"Delivery Note-reference_name",
+		"Delivery Note-reference_doctype",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",

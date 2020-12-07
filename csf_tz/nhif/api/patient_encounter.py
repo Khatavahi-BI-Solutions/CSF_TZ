@@ -5,8 +5,9 @@
 from __future__ import unicode_literals 
 import frappe
 from frappe import _
-from frappe.utils import nowdate, get_year_start, getdate
+from frappe.utils import nowdate, get_year_start, getdate, nowtime
 import datetime
+from csf_tz.nhif.api.patient_appointment import get_item_price
 
 
 def validate(doc, method):
@@ -167,6 +168,7 @@ def validate_stock_item(medication_name, qty, warehouse=None, healthcare_service
 
 def on_submit(doc, method):
     create_healthcare_docs(doc)
+    create_delivery_note(doc)
 
 
 def create_healthcare_docs(patient_encounter_doc):
@@ -227,3 +229,71 @@ def create_radiology_examination(patient_encounter_doc, child_table):
         if doc.get('name'):
             frappe.msgprint(_('Radiology Examination {0} created successfully.').format(
                 frappe.bold(doc.name)), alert=True)
+
+
+def create_delivery_note(patient_encounter_doc):
+    if not patient_encounter_doc.appointment:
+        return
+    insurance_subscription, insurance_company = frappe.get_value("Patient Appointment", patient_encounter_doc.appointment, ["insurance_subscription", "insurance_company"])
+    if not insurance_subscription:
+        return
+    warehouse = get_warehouse(patient_encounter_doc.healthcare_service_unit)
+    items = []
+    for row in patient_encounter_doc.drug_prescription:
+        if row.prescribe:
+            continue
+        item_code = frappe.get_value("Medication", row.drug_code, "item_code")
+        is_stock, item_name = frappe.get_value("Item", item_code, ["is_stock_item", "item_name"])
+        if not is_stock:
+            continue
+        item = frappe.new_doc("Delivery Note Item")
+        item.item_code = item_code
+        item.item_name = item_name
+        item.warehouse = warehouse
+        item.qty = row.quantity or 1
+        item.rate = get_item_rate(item_code, patient_encounter_doc.company ,insurance_subscription, insurance_company)
+        item.reference_doctype = row.doctype
+        item.reference_name = row.name
+        items.append(item)
+
+    doc = frappe.get_doc(dict(
+        doctype = "Delivery Note",
+        posting_date = nowdate(),
+        posting_time = nowtime(),
+        set_warehouse = warehouse,
+        company = patient_encounter_doc.company,
+        customer = frappe.get_value("Patient", patient_encounter_doc.patient, "customer"),
+        currency = frappe.get_value("Company", patient_encounter_doc.company, "default_currency"),
+        items = items,
+        reference_doctype = patient_encounter_doc.doctype,
+        reference_name = patient_encounter_doc.name
+    ))
+    doc.set_missing_values()
+    doc.insert(ignore_permissions=True)
+    if doc.get('name'):
+            frappe.msgprint(_('Delivery Note {0} created successfully.').format(
+                frappe.bold(doc.name)), alert=True)
+
+
+def get_item_rate(item_code, company, insurance_subscription, insurance_company):
+    price_list = None
+    price_list_rate = None
+    if  insurance_subscription:
+        hic_plan = frappe.get_value(
+            "Healthcare Insurance Subscription", insurance_subscription, "healthcare_insurance_coverage_plan")
+        price_list = frappe.get_value(
+            "Healthcare Insurance Coverage Plan", hic_plan, "price_list")
+        if price_list:
+            if price_list_rate and price_list_rate != 0:
+                price_list_rate = get_item_price(item_code, price_list, company)
+                return price_list_rate
+                
+    if not price_list and insurance_company:
+        price_list = frappe.get_value(
+        "Healthcare Insurance Company", insurance_company, "default_price_list")
+    if not price_list:
+            frappe.throw(_("Please set Price List in Healthcare Insurance Coverage Plan"))
+    price_list_rate = get_item_price(item_code, price_list, company)
+    if price_list_rate == 0:
+        frappe.throw(_("Please set Price List for item: {0}").format(item_code))
+    return price_list_rate
