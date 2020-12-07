@@ -482,6 +482,7 @@ doc_events = {
 	},
 	"Patient Encounter": {
 		"validate":"csf_tz.nhif.api.patient_encounter.validate",
+		"on_submit":"csf_tz.nhif.api.patient_encounter.on_submit",
 	},
 	"Healthcare Service Order": {
 		"before_insert": "csf_tz.nhif.api.service_order.set_missing_values"

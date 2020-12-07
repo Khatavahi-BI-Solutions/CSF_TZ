@@ -71,11 +71,12 @@ def get_item_price(item_code, price_list, company):
     price = 0
     company_currency = frappe.get_value("Company", company, "default_currency")
     item_prices_data = frappe.get_all("Item Price",
-                                      fields=[
-                                          "item_code", "price_list_rate", "currency"],
-                                      filters={
-                                          'price_list': price_list, 'item_code': item_code, 'currency': company_currency},
-                                      order_by="valid_from desc")
+        fields=[
+            "item_code", "price_list_rate", "currency"],
+        filters={
+            'price_list': price_list, 'item_code': item_code, 'currency': company_currency},
+        order_by="valid_from desc"
+    )
     if len(item_prices_data):
         price = item_prices_data[0].price_list_rate
     return price

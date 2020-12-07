@@ -163,3 +163,67 @@ def validate_stock_item(medication_name, qty, warehouse=None, healthcare_service
            return False
     
     return True
+
+
+def on_submit(doc, method):
+    create_healthcare_docs(doc)
+
+
+def create_healthcare_docs(patient_encounter_doc):
+    if not patient_encounter_doc.appointment:
+        return
+    insurance_subscription = frappe.get_value("Patient Appointment", patient_encounter_doc.appointment, "insurance_subscription")
+    if not insurance_subscription:
+        return
+    child_tables_list = ["lab_test_prescription","radiology_procedure_prescription"]
+    for child in child_tables_list:
+        if patient_encounter_doc.get(child):
+            if child == "lab_test_prescription":
+                create_lab_test(patient_encounter_doc, patient_encounter_doc.get(child))
+            elif child == "radiology_procedure_prescription":
+                create_radiology_examination(patient_encounter_doc, patient_encounter_doc.get(child))
+
+
+def create_lab_test(patient_encounter_doc, child_table):
+    for child in child_table:
+        if child.prescribe:
+            continue
+        
+        patient_sex = frappe.get_value("Patient", patient_encounter_doc.patient, "sex")
+        ltt_doc = frappe.get_doc("Lab Test Template", child.lab_test_code)
+        doc = frappe.new_doc('Lab Test')
+        doc.patient = patient_encounter_doc.patient
+        doc.patient_sex = patient_sex
+        doc.company = patient_encounter_doc.company
+        doc.template = ltt_doc.name
+        doc.practitioner = patient_encounter_doc.practitioner
+        doc.source = patient_encounter_doc.source
+
+        for entry in ltt_doc.lab_test_groups:
+            doc.append('normal_test_items', {
+                'lab_test_name': entry.lab_test_description,
+            })
+
+        doc.save(ignore_permissions=True)
+        if doc.get('name'):
+            frappe.msgprint(_('Lab Test {0} created successfully.').format(
+                frappe.bold(doc.name)), alert=True)
+
+
+def create_radiology_examination(patient_encounter_doc, child_table):
+    for child in child_table:
+        if child.prescribe:
+            continue
+        doc = frappe.new_doc('Radiology Examination')
+        doc.patient = patient_encounter_doc.patient
+        doc.company = patient_encounter_doc.company
+        doc.radiology_examination_template = child.radiology_examination_template
+        doc.practitioner = patient_encounter_doc.practitioner
+        doc.source = patient_encounter_doc.source
+        doc.medical_department = frappe.get_value(
+            "Radiology Examination Template", child.radiology_examination_template, "medical_department")
+
+        doc.save(ignore_permissions=True)
+        if doc.get('name'):
+            frappe.msgprint(_('Radiology Examination {0} created successfully.').format(
+                frappe.bold(doc.name)), alert=True)
