@@ -128,7 +128,7 @@ def invoice_appointment(name):
         sales_invoice.save(ignore_permissions=True)
         sales_invoice.submit()
         frappe.msgprint(_('Sales Invoice {0} created'.format(
-            sales_invoice.name)), alert=True)
+            sales_invoice.name)))
         appointment_doc = frappe.get_doc(
             "Patient Appointment", appointment_doc.name)
         appointment_doc.ref_sales_invoice = sales_invoice.name
@@ -148,7 +148,7 @@ def get_consulting_charge_item(appointment_type, practitioner):
 
 
 def make_vital(appointment_doc, method):
-    if not appointment_doc.ref_vital_signs and (appointment_doc.invoiced or appointment_doc.insurance_claim):
+    if not appointment_doc.ref_vital_signs and (appointment_doc.invoiced or appointment_doc.insurance_claim and appointment_doc.authorization_number):
         vital_doc = frappe.get_doc(dict(
             doctype="Vital Signs",
             patient=appointment_doc.patient,
@@ -159,7 +159,7 @@ def make_vital(appointment_doc, method):
         appointment_doc.ref_vital_signs = vital_doc.name
         # console(vital_doc)
         frappe.msgprint(_('Vital Signs {0} created'.format(
-            vital_doc.name)), alert=True)
+            vital_doc.name)))
 
 
 def make_encounter(vital_doc, method):
@@ -183,7 +183,7 @@ def make_encounter(vital_doc, method):
 
     appointment_doc.save(ignore_permissions=True)
     frappe.msgprint(_('Patient Encounter {0} created'.format(
-        appointment_doc.name)), alert=True)
+        appointment_doc.name)))
 
 
 
