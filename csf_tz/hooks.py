@@ -288,6 +288,15 @@ fixtures = [
 		"Drug Prescription-dosage-fetch_if_empty",
 		"Drug Prescription-period-fetch_if_empty",
 		"Drug Prescription-dosage_form-fetch_if_empty"
+		"Patient Encounter-section_break_3-collapsible"
+		"Patient Encounter-sb_source-collapsible"
+		"Patient Encounter-insurance_section-collapsible"
+		"Patient Encounter-sb_test_prescription-collapsible"
+		"Patient Encounter-radiology_procedures_section-collapsible"
+		"Patient Encounter-sb_procedures-collapsible"
+		"Patient Encounter-rehabilitation_section-collapsible"
+		"Patient Encounter-diet_recommendation_section-collapsible"
+		"Patient Encounter-encounter_comment-hidden"
 	)]]},
 ]
 

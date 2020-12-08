@@ -168,7 +168,7 @@ def validate_stock_item(medication_name, qty, warehouse=None, healthcare_service
 
 def on_submit(doc, method):
     create_healthcare_docs(doc)
-    # create_delivery_note(doc)
+    create_delivery_note(doc)
 
 
 def create_healthcare_docs(patient_encounter_doc):

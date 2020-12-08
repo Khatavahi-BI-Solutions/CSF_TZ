@@ -797,22 +797,5 @@
   "property_type": "Check",
   "row_name": null,
   "value": "1"
- },
- {
-  "default_value": null,
-  "doc_type": "Drug Prescription",
-  "docstatus": 0,
-  "doctype": "Property Setter",
-  "doctype_or_field": "DocField",
-  "field_name": "dosage_form",
-  "modified": "2020-12-04 17:03:34.901494",
-  "name": "Drug Prescription-dosage_form-fetch_if_empty",
-  "parent": null,
-  "parentfield": null,
-  "parenttype": null,
-  "property": "fetch_if_empty",
-  "property_type": "Check",
-  "row_name": null,
-  "value": "1"
  }
 ]
