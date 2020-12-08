@@ -18,7 +18,6 @@ from time import sleep
 from csf_tz.nhif.doctype.nhif_product.nhif_product import add_product
 from csf_tz.nhif.doctype.nhif_scheme.nhif_scheme import add_scheme
 from csf_tz.nhif.doctype.nhif_response_log.nhif_response_log import add_log
-# from csf_tz import console
 
 
 
@@ -26,7 +25,7 @@ def validate(doc, method):
     if doc.insurance_company and doc.insurance_company_name=="NHIF" and not doc.authorization_number:
         frappe.throw(_("Authorization Number is Mandatory"))
 
-x
+
 @frappe.whitelist()
 def get_insurance_amount(insurance_subscription, billing_item, company, patient, insurance_company):
     price_list = None
@@ -163,7 +162,6 @@ def make_vital(appointment_doc, method):
         ))
         vital_doc.save(ignore_permissions=True)
         appointment_doc.ref_vital_signs = vital_doc.name
-        # console(vital_doc)
         frappe.msgprint(_('Vital Signs {0} created'.format(
             vital_doc.name)))
 
