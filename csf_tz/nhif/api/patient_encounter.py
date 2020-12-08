@@ -54,7 +54,7 @@ def validate(doc, method):
     for key ,value in child_tables.items():
         table = doc.get(key)
         for row in table:
-            if row.override_subscription:
+            if row.override_subscription or row.prescribe:
                 continue
             if row.get(value) not in items_list:
                 frappe.throw(_("{0} not covered in Healthcare Insurance Coverage Plan").format(row.get(value)))
@@ -168,7 +168,7 @@ def validate_stock_item(medication_name, qty, warehouse=None, healthcare_service
 
 def on_submit(doc, method):
     create_healthcare_docs(doc)
-    create_delivery_note(doc)
+    # create_delivery_note(doc)
 
 
 def create_healthcare_docs(patient_encounter_doc):
@@ -210,7 +210,8 @@ def create_lab_test(patient_encounter_doc, child_table):
         if doc.get('name'):
             frappe.msgprint(_('Lab Test {0} created successfully.').format(
                 frappe.bold(doc.name)), alert=True)
-
+            child.lab_test_created = 1
+            child.save()
 
 def create_radiology_examination(patient_encounter_doc, child_table):
     for child in child_table:
@@ -229,7 +230,11 @@ def create_radiology_examination(patient_encounter_doc, child_table):
         if doc.get('name'):
             frappe.msgprint(_('Radiology Examination {0} created successfully.').format(
                 frappe.bold(doc.name)), alert=True)
+            child.radiology_examination_created = 1
+            child.save()
 
+# TODO created
+#  def create_procedure_prescription(patient_encounter_doc, child_table):
 
 def create_delivery_note(patient_encounter_doc):
     if not patient_encounter_doc.appointment:
