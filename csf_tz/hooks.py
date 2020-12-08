@@ -469,7 +469,7 @@ doc_events = {
 	"Patient Appointment": {
 		"validate":[
 			"csf_tz.nhif.api.patient_appointment.make_vital",
-			# "csf_tz.nhif.api.patient_appointment.validate"
+			"csf_tz.nhif.api.patient_appointment.validate"
 		]
 	},
 	"Vital Signs": {

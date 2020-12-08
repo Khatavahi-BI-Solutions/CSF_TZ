@@ -22,6 +22,11 @@ from csf_tz.nhif.doctype.nhif_response_log.nhif_response_log import add_log
 
 
 
+def validate(doc, method):
+    if doc.insurance_company and doc.insurance_company_name=="NHIF" and not doc.authorization_number:
+        frappe.throw(_("Authorization Number is Mandatory"))
+
+x
 @frappe.whitelist()
 def get_insurance_amount(insurance_subscription, billing_item, company, patient, insurance_company):
     price_list = None
@@ -209,35 +214,28 @@ def get_authorization_num(insurance_subscription, company, appointment_type, ref
         "Authorization" : "Bearer " + token
     }
     url = str(nhifservice_url) + "/nhifservice/breeze/verification/AuthorizeCard?" + card_no + visit_type_id + referral_no # + remarks
-    for i in range(3):
-        try:
-            r = requests.get(url, headers = headers, timeout=5)
-            r.raise_for_status()
-            frappe.logger().debug({"webhook_success": r.text})
-            if json.loads(r.text):
-                add_log(
-				request_type = "AuthorizeCard", 
-				request_url = url, 
-				request_header = headers, 
-				response_data = json.loads(r.text) 
-			    )
-                card = json.loads(r.text)
-                # console(card)
-                add_scheme(card.get("SchemeID"), card.get("SchemeName"))
-                add_product(card.get("ProductCode"), card.get("ProductName"))
-                frappe.msgprint(_(card["Remarks"]), alert=True)
-                return card
-            else:
-                add_log(
-				request_type = "AuthorizeCard", 
-				request_url = url, 
-				request_header = headers, 
-			    )
-                frappe.throw(json.loads(r.text))
-        except Exception as e:
-            frappe.logger().debug({"webhook_error": e, "try": i + 1})
-            sleep(3 * i + 1)
-            if i != 2:
-                continue
-            else:
-                raise e
+    r = requests.get(url, headers = headers, timeout=5)
+    r.raise_for_status()
+    frappe.logger().debug({"webhook_success": r.text})
+    if json.loads(r.text):
+        add_log(
+        request_type = "AuthorizeCard", 
+        request_url = url, 
+        request_header = headers, 
+        response_data = json.loads(r.text) 
+        )
+        card = json.loads(r.text)
+        # console(card)
+        if card.get("AuthorizationStatus") != "ACCEPTED":
+            frappe.throw(card["Remarks"])
+        frappe.msgprint(_(card["Remarks"]), alert=True)
+        add_scheme(card.get("SchemeID"), card.get("SchemeName"))
+        add_product(card.get("ProductCode"), card.get("ProductName"))
+        return card
+    else:
+        add_log(
+        request_type = "AuthorizeCard", 
+        request_url = url, 
+        request_header = headers, 
+        )
+        frappe.throw(json.loads(r.text))
