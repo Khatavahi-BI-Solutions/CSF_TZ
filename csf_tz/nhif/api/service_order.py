@@ -18,6 +18,8 @@ def set_missing_values(doc, method):
 @frappe.whitelist()
 def clear_insurance_details(service_order):
     service_order_doc = frappe.get_doc('Healthcare Service Order', service_order)
+    if service_order_doc.docstatus != 0:
+        return
     insurance_claim = service_order_doc.insurance_claim
     service_order_doc.insurance_claim = ""
     service_order_doc.insurance_subscription = ""
@@ -34,4 +36,4 @@ def clear_insurance_details(service_order):
     frappe.db.commit()
     frappe.msgprint(_('Healthcare Insurance Claim {0} deleted successfully.').format(
                 frappe.bold(insurance_claim)), alert=True)
-    return "True"
+    return True
