@@ -238,6 +238,8 @@ fixtures = [
 		"Delivery Note Item-reference_doctype",
 		"Delivery Note-reference_name",
 		"Delivery Note-reference_doctype",
+		"Healthcare Service Order-original_his",
+		"Healthcare Service Order-clear_insurance_details",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
@@ -354,6 +356,7 @@ doctype_js = {
 	],
 	"Patient Encounter": "nhif/api/patient_encounter.js",
 	"Lab Test": "nhif/api/lab_test.js",
+	"Healthcare Service Order": "nhif/api/service_order.js",
 }
 #csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
