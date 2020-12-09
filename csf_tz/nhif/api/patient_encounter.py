@@ -177,20 +177,21 @@ def create_healthcare_docs(patient_encounter_doc):
     insurance_subscription = frappe.get_value("Patient Appointment", patient_encounter_doc.appointment, "insurance_subscription")
     if not insurance_subscription:
         return
-    child_tables_list = ["lab_test_prescription","radiology_procedure_prescription"]
+    child_tables_list = ["lab_test_prescription","radiology_procedure_prescription","procedure_prescription"]
     for child in child_tables_list:
         if patient_encounter_doc.get(child):
             if child == "lab_test_prescription":
                 create_lab_test(patient_encounter_doc, patient_encounter_doc.get(child))
             elif child == "radiology_procedure_prescription":
                 create_radiology_examination(patient_encounter_doc, patient_encounter_doc.get(child))
+            elif child == "procedure_prescription":
+                create_procedure_prescription(patient_encounter_doc, patient_encounter_doc.get(child), insurance_subscription)
 
 
 def create_lab_test(patient_encounter_doc, child_table):
     for child in child_table:
         if child.prescribe:
             continue
-        
         patient_sex = frappe.get_value("Patient", patient_encounter_doc.patient, "sex")
         ltt_doc = frappe.get_doc("Lab Test Template", child.lab_test_code)
         doc = frappe.new_doc('Lab Test')
@@ -211,7 +212,8 @@ def create_lab_test(patient_encounter_doc, child_table):
             frappe.msgprint(_('Lab Test {0} created successfully.').format(
                 frappe.bold(doc.name)), alert=True)
             child.lab_test_created = 1
-            child.save()
+            child.db_update()
+
 
 def create_radiology_examination(patient_encounter_doc, child_table):
     for child in child_table:
@@ -231,10 +233,31 @@ def create_radiology_examination(patient_encounter_doc, child_table):
             frappe.msgprint(_('Radiology Examination {0} created successfully.').format(
                 frappe.bold(doc.name)), alert=True)
             child.radiology_examination_created = 1
-            child.save()
+            child.db_update()
 
-# TODO created
-#  def create_procedure_prescription(patient_encounter_doc, child_table):
+
+def create_procedure_prescription(patient_encounter_doc, child_table, insurance_subscription):
+    for child in child_table:
+        if child.prescribe:
+            continue
+        doc = frappe.new_doc('Clinical Procedure')
+        doc.patient = patient_encounter_doc.patient
+        doc.company = patient_encounter_doc.company
+        doc.procedure_template = child.procedure
+        doc.practitioner = patient_encounter_doc.practitioner
+        doc.source = patient_encounter_doc.source
+        doc.insurance_subscription = insurance_subscription
+        doc.patient_sex = frappe.get_value("Patient", patient_encounter_doc.patient, "sex")
+        doc.medical_department = frappe.get_value(
+            "Clinical Procedure Template", child.procedure, "medical_department")
+
+        doc.save(ignore_permissions=True)
+        if doc.get('name'):
+            frappe.msgprint(_('Clinical Procedure {0} created successfully.').format(
+                frappe.bold(doc.name)), alert=True)
+            child.procedure_created = 1
+            child.db_update()
+
 
 def create_delivery_note(patient_encounter_doc):
     if not patient_encounter_doc.appointment:
@@ -261,6 +284,8 @@ def create_delivery_note(patient_encounter_doc):
         item.reference_name = row.name
         items.append(item)
 
+    if len(items) == 0:
+        return
     doc = frappe.get_doc(dict(
         doctype = "Delivery Note",
         posting_date = nowdate(),
