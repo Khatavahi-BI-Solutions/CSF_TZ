@@ -37,9 +37,9 @@ def clear_insurance_details(service_order):
     frappe.db.commit()
 
     child_tables = {
-		# "drug_prescription": "",
-		"lab_test_prescription": "lab_test_created", #
-		"procedure_prescription": "procedure_created", #
+		"drug_prescription": "drug_prescription_created",
+		"lab_test_prescription": "lab_test_created",
+		"procedure_prescription": "procedure_created",
 		"radiology_procedure_prescription": "radiology_examination_created",
 		# "therapies": "",
 	}
