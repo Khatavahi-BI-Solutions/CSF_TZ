@@ -45,6 +45,10 @@ frappe.ui.form.on('Patient Appointment', {
         frm.trigger("update_primary_action")
         if (frm.doc.mode_of_payment) {
             frm.set_value("insurance_subscription", "")
+            frm.set_value("insurance_company", "")
+            frm.set_value("coverage_plan_name", "")
+            frm.set_value("coverage_plan_card_number", "")
+            frm.set_value("insurance_company_name", "")
             frm.trigger('get_mop_amount')
         }
     },
@@ -153,7 +157,7 @@ frappe.ui.form.on('Patient Appointment', {
         }
     },
     get_authorization_number: function(frm) {
-        frm.trigger("get_authorization_num")
+        frm.trigger("get_authorization_num");
     },
     get_authorization_num: function(frm) {
         if (!frm.doc.insurance_subscription) {
@@ -168,11 +172,13 @@ frappe.ui.form.on('Patient Appointment', {
                 'appointment_type': frm.doc.appointment_type,
                 'referral_no': frm.doc.referral_no
             },
+            async: true,
             callback: function (data) {
                 if (data.message) {
                     const card = data.message;
                         if (card.AuthorizationStatus == 'ACCEPTED') {
                             frm.set_value("authorization_number", card.AuthorizationNo)
+                            frm.save();
                             frappe.show_alert({
                                 message:__("Authorization Number is updated"),
                                 indicator:'green'

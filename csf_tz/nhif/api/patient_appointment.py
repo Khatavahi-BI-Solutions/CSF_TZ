@@ -21,11 +21,6 @@ from csf_tz.nhif.doctype.nhif_response_log.nhif_response_log import add_log
 
 
 
-def validate(doc, method):
-    if doc.insurance_company and doc.insurance_company_name=="NHIF" and not doc.authorization_number:
-        frappe.throw(_("Authorization Number is Mandatory"))
-
-
 @frappe.whitelist()
 def get_insurance_amount(insurance_subscription, billing_item, company, patient, insurance_company):
     price_list = None
@@ -153,7 +148,7 @@ def get_consulting_charge_item(appointment_type, practitioner):
 
 
 def make_vital(appointment_doc, method):
-    if not appointment_doc.ref_vital_signs and (appointment_doc.invoiced or appointment_doc.insurance_claim and appointment_doc.authorization_number):
+    if not appointment_doc.ref_vital_signs and (appointment_doc.invoiced or (appointment_doc.insurance_claim and appointment_doc.authorization_number)):
         vital_doc = frappe.get_doc(dict(
             doctype="Vital Signs",
             patient=appointment_doc.patient,
@@ -195,7 +190,7 @@ def make_encounter(vital_doc, method):
 def get_authorization_num(insurance_subscription, company, appointment_type, referral_no=""):
     enable_nhif_api = frappe.get_value("Company NHIF Settings", company, "enable")
     if not enable_nhif_api:
-        frappe.msgprint(_("Company {0} not enabled for NHIF Integration".format(company)), alert=True)
+        frappe.msgprint(_("Company {0} not enabled for NHIF Integration".format(company)))
         return
     card_no = frappe.get_value("Healthcare Insurance Subscription", insurance_subscription, "coverage_plan_card_number")
     if not card_no:
@@ -226,7 +221,7 @@ def get_authorization_num(insurance_subscription, company, appointment_type, ref
         # console(card)
         if card.get("AuthorizationStatus") != "ACCEPTED":
             frappe.throw(card["Remarks"])
-        frappe.msgprint(_(card["Remarks"]), alert=True)
+        frappe.msgprint(_(card["Remarks"]), alert=true)
         add_scheme(card.get("SchemeID"), card.get("SchemeName"))
         add_product(card.get("ProductCode"), card.get("ProductName"))
         return card

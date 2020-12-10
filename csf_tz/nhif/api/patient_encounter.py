@@ -55,6 +55,8 @@ def validate(doc, method):
         table = doc.get(key)
         for row in table:
             if row.override_subscription or row.prescribe:
+                if row.prescribe:
+                    frappe.msgprint(_("{0} has been prescribed. Request the patient to visit the cashier for cash payment or prescription printout.").format(row.get(value)))
                 continue
             if row.get(value) not in items_list:
                 frappe.throw(_("{0} not covered in Healthcare Insurance Coverage Plan").format(row.get(value)))
@@ -115,7 +117,7 @@ def duplicate_encounter(encounter):
 	encounter_dict["from_encounter"] = doc.name
 	encounter_doc = frappe.get_doc(encounter_dict)
 	encounter_doc.save()
-	frappe.msgprint(_('Patient Encounter {0} created'.format(encounter_doc.name)), alert=True)
+	frappe.msgprint(_('Patient Encounter {0} created'.format(encounter_doc.name)))
 	doc.duplicate = 1
 	doc.save()
 	return encounter_doc.name
@@ -210,7 +212,7 @@ def create_lab_test(patient_encounter_doc, child_table):
         doc.save(ignore_permissions=True)
         if doc.get('name'):
             frappe.msgprint(_('Lab Test {0} created successfully.').format(
-                frappe.bold(doc.name)), alert=True)
+                frappe.bold(doc.name)))
             child.lab_test_created = 1
             child.db_update()
 
@@ -231,7 +233,7 @@ def create_radiology_examination(patient_encounter_doc, child_table):
         doc.save(ignore_permissions=True)
         if doc.get('name'):
             frappe.msgprint(_('Radiology Examination {0} created successfully.').format(
-                frappe.bold(doc.name)), alert=True)
+                frappe.bold(doc.name)))
             child.radiology_examination_created = 1
             child.db_update()
 
@@ -254,7 +256,7 @@ def create_procedure_prescription(patient_encounter_doc, child_table, insurance_
         doc.save(ignore_permissions=True)
         if doc.get('name'):
             frappe.msgprint(_('Clinical Procedure {0} created successfully.').format(
-                frappe.bold(doc.name)), alert=True)
+                frappe.bold(doc.name)))
             child.procedure_created = 1
             child.db_update()
 
@@ -282,6 +284,7 @@ def create_delivery_note(patient_encounter_doc):
         item.rate = get_item_rate(item_code, patient_encounter_doc.company ,insurance_subscription, insurance_company)
         item.reference_doctype = row.doctype
         item.reference_name = row.name
+        item.description = row.drug_name + " for " + row.dosage + " for " + row.period
         items.append(item)
 
     if len(items) == 0:
@@ -302,7 +305,7 @@ def create_delivery_note(patient_encounter_doc):
     doc.insert(ignore_permissions=True)
     if doc.get('name'):
             frappe.msgprint(_('Delivery Note {0} created successfully.').format(
-                frappe.bold(doc.name)), alert=True)
+                frappe.bold(doc.name)))
 
 
 def get_item_rate(item_code, company, insurance_subscription, insurance_company):

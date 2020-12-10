@@ -289,16 +289,24 @@ fixtures = [
 		"Radiology Examination-insurance_section-hidden",
 		"Drug Prescription-dosage-fetch_if_empty",
 		"Drug Prescription-period-fetch_if_empty",
-		"Drug Prescription-dosage_form-fetch_if_empty"
-		"Patient Encounter-section_break_3-collapsible"
-		"Patient Encounter-sb_source-collapsible"
-		"Patient Encounter-insurance_section-collapsible"
-		"Patient Encounter-sb_test_prescription-collapsible"
-		"Patient Encounter-radiology_procedures_section-collapsible"
-		"Patient Encounter-sb_procedures-collapsible"
-		"Patient Encounter-rehabilitation_section-collapsible"
-		"Patient Encounter-diet_recommendation_section-collapsible"
-		"Patient Encounter-encounter_comment-hidden"
+		"Drug Prescription-dosage_form-fetch_if_empty",
+		"Patient Encounter-section_break_3-collapsible",
+		"Patient Encounter-sb_source-collapsible",
+		"Patient Encounter-insurance_section-collapsible",
+		"Patient Encounter-sb_test_prescription-collapsible",
+		"Patient Encounter-radiology_procedures_section-collapsible",
+		"Patient Encounter-sb_procedures-collapsible",
+		"Patient Encounter-rehabilitation_section-collapsible",
+		"Patient Encounter-diet_recommendation_section-collapsible",
+		"Patient Encounter-encounter_comment-hidden",
+		"Patient Encounter-rehabilitation_section-collapsible_depends_on",
+		"Patient Encounter-sb_drug_prescription-collapsible_depends_on",
+		"Patient Encounter-sb_procedures-collapsible_depends_on",
+		"Patient Encounter-radiology_procedures_section-collapsible_depends_on",
+		"Patient Encounter-sb_test_prescription-collapsible_depends_on",
+		"Patient Encounter-source-read_only_depends_on",
+		"Patient Encounter-company-read_only",
+		"Patient Encounter-appointment_type-read_only_depends_on"
 	)]]},
 ]
 
@@ -481,7 +489,6 @@ doc_events = {
 	"Patient Appointment": {
 		"validate":[
 			"csf_tz.nhif.api.patient_appointment.make_vital",
-			"csf_tz.nhif.api.patient_appointment.validate"
 		]
 	},
 	"Vital Signs": {
