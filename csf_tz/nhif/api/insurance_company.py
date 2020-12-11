@@ -88,7 +88,6 @@ def get_nhif_price_package(kwargs):
 				)
 				VALUES {}
 			'''.format(', '.join(['%s'] * len(insert_data))), tuple(insert_data))
-            frappe.db.commit()
             insert_data = []
             for item in data.get("ExcludedServices"):
                 insert_data.append((
@@ -109,5 +108,6 @@ def get_nhif_price_package(kwargs):
 				)
 				VALUES {}
 			'''.format(', '.join(['%s'] * len(insert_data))), tuple(insert_data))
+            frappe.db.commit()
             return data
 
