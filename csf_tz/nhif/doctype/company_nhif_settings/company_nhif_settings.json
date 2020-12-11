@@ -64,7 +64,6 @@
   {
    "fieldname": "nhifservice_token",
    "fieldtype": "Small Text",
-   "hidden": 1,
    "label": "NHIF Service Token",
    "read_only": 1
   },
@@ -87,7 +86,6 @@
   {
    "fieldname": "claimsserver_token",
    "fieldtype": "Small Text",
-   "hidden": 1,
    "label": "Claims Server Token",
    "read_only": 1
   },
@@ -110,7 +108,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2020-12-11 03:33:26.170303",
+ "modified": "2020-12-11 14:23:18.477389",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "Company NHIF Settings",
