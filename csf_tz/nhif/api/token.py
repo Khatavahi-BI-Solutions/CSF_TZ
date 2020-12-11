@@ -13,7 +13,7 @@ import requests
 from time import sleep
 from frappe.utils import  now, add_to_date, now_datetime
 from csf_tz.nhif.doctype.nhif_response_log.nhif_response_log import add_log
-# from csf_tz import console
+from csf_tz import console
 
 
 def get_nhifservice_token(company):
@@ -49,6 +49,7 @@ def get_nhifservice_token(company):
 				setting_doc.nhifservice_token = token
 				setting_doc.nhifservice_expiry = expiry_date
 				setting_doc.db_update()
+				frappe.db.commit()
 				return token
 			else:
 				add_log(
@@ -78,7 +79,7 @@ def get_claimsservice_token(company):
 	headers = {
 		'Content-Type': 'application/x-www-form-urlencoded'
 	}
-	url = str(setting_doc.nhifservice_url) + "/claimsserver/Token" 
+	url = str(setting_doc.claimsserver_url) + "/claimsserver/Token" 
 
 	for i in range(3):
 		try:
@@ -100,6 +101,7 @@ def get_claimsservice_token(company):
 				setting_doc.claimsserver_token = token
 				setting_doc.claimsserver_expiry = expiry_date
 				setting_doc.db_update()
+				frappe.db.commit()
 				return token
 			else:
 				add_log(

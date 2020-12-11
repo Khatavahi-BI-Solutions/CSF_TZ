@@ -26,11 +26,11 @@ def enqueue_get_nhif_price_package():
 def get_nhif_price_package():
     company = get_default_company() ## TODO: need to be fixed to support pultiple company
     token = get_claimsservice_token(company)
-    nhifservice_url, facility_code = frappe.get_value("Company NHIF Settings", company, ["nhifservice_url", "facility_code"])
+    claimsserver_url, facility_code = frappe.get_value("Company NHIF Settings", company, ["nhifservice_url", "facility_code"])
     headers = {
         "Authorization" : "Bearer " + token
     }
-    url = str(nhifservice_url) + "/claimsserver/api/v1/Packages/GetPricePackageWithExcludedServices?FacilityCode=" + str(facility_code)
+    url = str(claimsserver_url) + "/claimsserver/api/v1/Packages/GetPricePackageWithExcludedServices?FacilityCode=" + str(facility_code)
     r = requests.get(url, headers = headers, timeout=5)
     if r.status_code != 200:
         console("Erorr")
@@ -51,7 +51,6 @@ def get_nhif_price_package():
             time_stamp = now()
             data = json.loads(r.text)
             for item in data.get("PricePackage"):
-                console(item.get("PriceCode"),item.get("ItemCode"), item.get("ItemName"))
                 doc = frappe.new_doc("NHIF Price Package")
                 doc.facilitycode = facility_code
                 doc.time_stamp = time_stamp
@@ -74,10 +73,11 @@ def get_nhif_price_package():
                 doc.practitionerqualifications = item.get("PractitionerQualifications")
                 doc.isactive = item.get("IsActive")
                 doc.save(ignore_permissions=True)
+                console(doc.name ,item.get("PriceCode"),item.get("ItemCode"), item.get("ItemName"))
             frappe.db.commit()
             for item in data.get("ExcludedServices"):
                 console(item.get("PriceCode"),item.get("SchemeID"), item.get("SchemeName"))
-                doc = frappe.new_doc("NHIF Price Package")
+                doc = frappe.new_doc("NHIF Excluded Services")
                 doc.facilitycode = facility_code
                 doc.time_stamp = time_stamp
                 doc.log_name = log_name
@@ -86,6 +86,7 @@ def get_nhif_price_package():
                 doc.schemename = item.get("SchemeName")
                 doc.excludedforproducts = item.get("ExcludedForProducts")
                 doc.save(ignore_permissions=True)
+                console(item.get(doc.name ,"PriceCode"),item.get("SchemeID"), item.get("SchemeName"))
             frappe.db.commit()
             return data
 
