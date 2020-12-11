@@ -51,6 +51,7 @@ def get_nhif_price_package():
             time_stamp = now()
             data = json.loads(r.text)
             for item in data.get("PricePackage"):
+                console(item.get("PriceCode"),item.get("ItemCode"), item.get("ItemName"))
                 doc = frappe.new_doc("NHIF Price Package")
                 doc.facilitycode = facility_code
                 doc.time_stamp = time_stamp
@@ -73,8 +74,9 @@ def get_nhif_price_package():
                 doc.practitionerqualifications = item.get("PractitionerQualifications")
                 doc.isactive = item.get("IsActive")
                 doc.save(ignore_permissions=True)
-                frappe.db.commit()
+            frappe.db.commit()
             for item in data.get("ExcludedServices"):
+                console(item.get("PriceCode"),item.get("SchemeID"), item.get("SchemeName"))
                 doc = frappe.new_doc("NHIF Price Package")
                 doc.facilitycode = facility_code
                 doc.time_stamp = time_stamp
@@ -84,6 +86,6 @@ def get_nhif_price_package():
                 doc.schemename = item.get("SchemeName")
                 doc.excludedforproducts = item.get("ExcludedForProducts")
                 doc.save(ignore_permissions=True)
-                frappe.db.commit()
+            frappe.db.commit()
             return data
 
