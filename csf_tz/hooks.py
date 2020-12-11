@@ -291,7 +291,7 @@ fixtures = [
 		"Drug Prescription-period-fetch_if_empty",
 		"Drug Prescription-dosage_form-fetch_if_empty",
 		"Patient Encounter-section_break_3-collapsible",
-		"Patient Encounter-sb_source-collapsible",
+		"Patient Encounter-sb_source-collapsible,",
 		"Patient Encounter-insurance_section-collapsible",
 		"Patient Encounter-sb_test_prescription-collapsible",
 		"Patient Encounter-radiology_procedures_section-collapsible",
@@ -306,7 +306,21 @@ fixtures = [
 		"Patient Encounter-sb_test_prescription-collapsible_depends_on",
 		"Patient Encounter-source-read_only_depends_on",
 		"Patient Encounter-company-read_only",
-		"Patient Encounter-appointment_type-read_only_depends_on"
+		"Patient Encounter-appointment_type-read_only_depends_on",
+		"Patient-more_info-collapsible_depends_on",
+		"Healthcare Insurance Subscription-country-hidden",
+		"Healthcare Insurance Subscription-insurance_company_customer-hidden",
+		"Healthcare Insurance Subscription-insurance_company_name-read_only",
+		"Healthcare Insurance Subscription-gender-read_only",
+		"Healthcare Insurance Subscription-customer-hidden",
+		"Healthcare Insurance Subscription-patient_name-read_only",
+		"Patient-default_price_list-hidden",
+		"Patient-default_currency-read_only",
+		"Patient-territory-hidden",
+		"Patient-invite_user-default",
+		"Patient-triage-hidden",
+		"Vital Signs-rbg",
+		"Vital Signs-height_in_cm",
 	)]]},
 ]
 
@@ -366,6 +380,7 @@ doctype_js = {
 	"Lab Test": "nhif/api/lab_test.js",
 	"Healthcare Service Order": "nhif/api/service_order.js",
 	"Healthcare Service Insurance Coverage": "nhif/api/insurance_coverage.js",
+	"Vital Signs": "nhif/api/vital_signs.js",
 }
 #csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
