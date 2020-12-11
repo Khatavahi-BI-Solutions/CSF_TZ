@@ -26,7 +26,7 @@ def enqueue_get_nhif_price_package():
 def get_nhif_price_package():
     company = get_default_company() ## TODO: need to be fixed to support pultiple company
     token = get_claimsservice_token(company)
-    claimsserver_url, facility_code = frappe.get_value("Company NHIF Settings", company, ["nhifservice_url", "facility_code"])
+    claimsserver_url, facility_code = frappe.get_value("Company NHIF Settings", company, ["claimsserver_url", "facility_code"])
     headers = {
         "Authorization" : "Bearer " + token
     }
@@ -51,42 +51,42 @@ def get_nhif_price_package():
             time_stamp = now()
             data = json.loads(r.text)
             for item in data.get("PricePackage"):
-                doc = frappe.new_doc("NHIF Price Package")
-                doc.facilitycode = facility_code
-                doc.time_stamp = time_stamp
-                doc.log_name = log_name
-                doc.itemcode = item.get("ItemCode")
-                doc.pricecode = item.get("PriceCode")
-                doc.levelpricecode = item.get("LevelPriceCode")
-                doc.olditemcode = item.get("OldItemCode")
-                doc.itemtypeid = item.get("ItemTypeID")
-                doc.itemname = item.get("ItemName")
-                doc.strength = item.get("Strength")
-                doc.dosage = item.get("Dosage")
-                doc.packageid = item.get("PackageID")
-                doc.schemeid = item.get("SchemeID")
-                doc.facilitylevelcode = item.get("FacilityLevelCode")
-                doc.unitprice = item.get("UnitPrice")
-                doc.isrestricted = item.get("IsRestricted")
-                doc.maximumquantity = item.get("MaximumQuantity")
-                doc.availableinlevels = item.get("AvailableInLevels")
-                doc.practitionerqualifications = item.get("PractitionerQualifications")
-                doc.isactive = item.get("IsActive")
-                doc.save(ignore_permissions=True)
-                console(doc.name ,item.get("PriceCode"),item.get("ItemCode"), item.get("ItemName"))
+                doc_pack = frappe.new_doc("NHIF Price Package")
+                doc_pack.facilitycode = facility_code
+                doc_pack.time_stamp = time_stamp
+                doc_pack.log_name = log_name
+                doc_pack.itemcode = item.get("ItemCode")
+                doc_pack.pricecode = item.get("PriceCode")
+                doc_pack.levelpricecode = item.get("LevelPriceCode")
+                doc_pack.olditemcode = item.get("OldItemCode")
+                doc_pack.itemtypeid = item.get("ItemTypeID")
+                doc_pack.itemname = item.get("ItemName")
+                doc_pack.strength = item.get("Strength")
+                doc_pack.dosage = item.get("Dosage")
+                doc_pack.packageid = item.get("PackageID")
+                doc_pack.schemeid = item.get("SchemeID")
+                doc_pack.facilitylevelcode = item.get("FacilityLevelCode")
+                doc_pack.unitprice = item.get("UnitPrice")
+                doc_pack.isrestricted = item.get("IsRestricted")
+                doc_pack.maximumquantity = item.get("MaximumQuantity")
+                doc_pack.availableinlevels = item.get("AvailableInLevels")
+                doc_pack.practitionerqualifications = item.get("PractitionerQualifications")
+                doc_pack.isactive = item.get("IsActive")
+                doc_pack.save(ignore_permissions=True)
+                console(doc_pack.name ,item.get("PriceCode"),item.get("ItemCode"), item.get("ItemName"))
             frappe.db.commit()
             for item in data.get("ExcludedServices"):
                 console(item.get("PriceCode"),item.get("SchemeID"), item.get("SchemeName"))
-                doc = frappe.new_doc("NHIF Excluded Services")
-                doc.facilitycode = facility_code
-                doc.time_stamp = time_stamp
-                doc.log_name = log_name
-                doc.itemcode = item.get("ItemCode")
-                doc.schemeid = item.get("SchemeID")
-                doc.schemename = item.get("SchemeName")
-                doc.excludedforproducts = item.get("ExcludedForProducts")
-                doc.save(ignore_permissions=True)
-                console(item.get(doc.name ,"PriceCode"),item.get("SchemeID"), item.get("SchemeName"))
+                doc_exc = frappe.new_doc("NHIF Excluded Services")
+                doc_exc.facilitycode = facility_code
+                doc_exc.time_stamp = time_stamp
+                doc_exc.log_name = log_name
+                doc_exc.itemcode = item.get("ItemCode")
+                doc_exc.schemeid = item.get("SchemeID")
+                doc_exc.schemename = item.get("SchemeName")
+                doc_exc.excludedforproducts = item.get("ExcludedForProducts")
+                doc_exc.save(ignore_permissions=True)
+                console(item.get(doc_exc.name ,"PriceCode"),item.get("SchemeID"), item.get("SchemeName"))
             frappe.db.commit()
             return data
 
