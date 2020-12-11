@@ -7,7 +7,7 @@ from csf_tz.nhif.api.token import get_claimsservice_token
 from erpnext import get_company_currency, get_default_company
 import json
 import requests
-from time import sleep
+from frappe.utils.background_jobs import enqueue
 from csf_tz.nhif.doctype.nhif_product.nhif_product import add_product
 from csf_tz.nhif.doctype.nhif_scheme.nhif_scheme import add_scheme
 from frappe.utils import now
@@ -15,11 +15,17 @@ from csf_tz.nhif.doctype.nhif_response_log.nhif_response_log import add_log
 from csf_tz import console
 
 
+
 @frappe.whitelist()
+def enqueue_get_nhif_price_package():
+    enqueue(method=get_nhif_price_package, queue='long', timeout=10000000, is_async=True)
+    frappe.msgprint(_("Start Getting NHIF Prices Packages"),alert=True)
+    return
+
+
 def get_nhif_price_package():
     company = get_default_company() ## TODO: need to be fixed to support pultiple company
     token = get_claimsservice_token(company)
-    
     nhifservice_url, facility_code = frappe.get_value("Company NHIF Settings", company, ["nhifservice_url", "facility_code"])
     headers = {
         "Authorization" : "Bearer " + token
