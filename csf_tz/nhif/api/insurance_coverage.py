@@ -24,6 +24,9 @@ def enqueue_get_nhif_price_package():
 
 
 def get_nhif_price_package():
+    frappe.db.sql("DELETE FROM `tabNHIF Price Package` WHERE name != 'ABC'")
+    frappe.db.sql("DELETE FROM `tabNHIF Excluded Services` WHERE name != 'ABC'")
+    frappe.db.commit()
     company = get_default_company() ## TODO: need to be fixed to support pultiple company
     token = get_claimsservice_token(company)
     claimsserver_url, facility_code = frappe.get_value("Company NHIF Settings", company, ["claimsserver_url", "facility_code"])
