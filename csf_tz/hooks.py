@@ -365,7 +365,7 @@ doctype_js = {
 	"Patient Encounter": "nhif/api/patient_encounter.js",
 	"Lab Test": "nhif/api/lab_test.js",
 	"Healthcare Service Order": "nhif/api/service_order.js",
-	"Healthcare Service Insurance Coverage": "nhif/api/insurance_coverage.js",
+	"Healthcare Insurance Company": "nhif/api/insurance_company.js",
 }
 #csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}

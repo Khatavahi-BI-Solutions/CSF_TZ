@@ -24,6 +24,8 @@
   {
    "fieldname": "time_stamp",
    "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Time Stamp"
   },
   {
@@ -33,36 +35,43 @@
   {
    "fieldname": "itemcode",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "ItemCode"
   },
   {
    "fieldname": "schemeid",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "SchemeID"
   },
   {
    "fieldname": "schemename",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "SchemeName"
   },
   {
    "fieldname": "excludedforproducts",
    "fieldtype": "Small Text",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "ExcludedForProducts"
   },
   {
    "fieldname": "log_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Log Name",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2020-12-11 04:48:41.334139",
+ "modified": "2020-12-12 00:23:39.356434",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Excluded Services",

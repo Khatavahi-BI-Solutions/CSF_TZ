@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 from csf_tz.nhif.api.token import get_claimsservice_token
-from erpnext import get_company_currency, get_default_company
 import json
 import requests
 from frappe.utils.background_jobs import enqueue
@@ -17,17 +16,17 @@ from csf_tz import console
 
 
 @frappe.whitelist()
-def enqueue_get_nhif_price_package():
-    enqueue(method=get_nhif_price_package, queue='long', timeout=10000000, is_async=True)
+def enqueue_get_nhif_price_package(company):
+    enqueue(method=get_nhif_price_package, queue='long', timeout=10000000, is_async=True, kwargs = company)
     frappe.msgprint(_("Start Getting NHIF Prices Packages"),alert=True)
     return
 
 
-def get_nhif_price_package():
+def get_nhif_price_package(kwargs):
+    company = kwargs
     frappe.db.sql("DELETE FROM `tabNHIF Price Package` WHERE name != 'ABC'")
     frappe.db.sql("DELETE FROM `tabNHIF Excluded Services` WHERE name != 'ABC'")
     frappe.db.commit()
-    company = get_default_company() ## TODO: need to be fixed to support pultiple company
     token = get_claimsservice_token(company)
     claimsserver_url, facility_code = frappe.get_value("Company NHIF Settings", company, ["claimsserver_url", "facility_code"])
     headers = {

@@ -34,18 +34,21 @@
    "fieldname": "itemcode",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "ItemCode"
   },
   {
    "fieldname": "pricecode",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "PriceCode"
   },
   {
    "fieldname": "levelpricecode",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "LevelPriceCode"
   },
   {
@@ -56,11 +59,14 @@
   {
    "fieldname": "itemtypeid",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "ItemTypeID"
   },
   {
    "fieldname": "itemname",
    "fieldtype": "Small Text",
+   "in_standard_filter": 1,
    "label": "ItemName"
   },
   {
@@ -77,17 +83,20 @@
    "fieldname": "packageid",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "PackageID"
   },
   {
    "fieldname": "schemeid",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "SchemeID"
   },
   {
    "fieldname": "facilitylevelcode",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "FacilityLevelCode"
   },
   {
@@ -99,6 +108,7 @@
   {
    "fieldname": "isrestricted",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "IsRestricted"
   },
   {
@@ -120,11 +130,14 @@
    "fieldname": "isactive",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "IsActive"
   },
   {
    "fieldname": "time_stamp",
    "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Time Stamp"
   },
   {
@@ -143,13 +156,15 @@
   {
    "fieldname": "log_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Log Name",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2020-12-11 05:13:56.902785",
+ "modified": "2020-12-12 00:28:19.653591",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Price Package",
