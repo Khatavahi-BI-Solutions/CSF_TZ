@@ -221,7 +221,7 @@ def get_authorization_num(insurance_subscription, company, appointment_type, ref
         # console(card)
         if card.get("AuthorizationStatus") != "ACCEPTED":
             frappe.throw(card["Remarks"])
-        frappe.msgprint(_(card["Remarks"]), alert=true)
+        frappe.msgprint(_(card["Remarks"]), alert=True)
         add_scheme(card.get("SchemeID"), card.get("SchemeName"))
         add_product(card.get("ProductCode"), card.get("ProductName"))
         return card
