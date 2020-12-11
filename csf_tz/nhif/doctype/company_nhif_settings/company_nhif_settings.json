@@ -9,6 +9,8 @@
   "company",
   "username",
   "password",
+  "column_break_4",
+  "facility_code",
   "enable",
   "section_break_5",
   "nhifservice_url",
@@ -94,11 +96,21 @@
    "fieldtype": "Datetime",
    "label": "Claims Server Token Expiry",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "facility_code",
+   "fieldtype": "Data",
+   "label": "Facility Code",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2020-11-13 14:55:39.035857",
+ "modified": "2020-12-11 03:33:26.170303",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "Company NHIF Settings",

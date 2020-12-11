@@ -28,7 +28,7 @@ def get_patinet_info(card_no = None):
     if not card_no:
         frappe.msgprint(_("Please set Card No"))
         return
-    company = get_default_company()
+    company = get_default_company() ## TODO: need to be fixed to support pultiple company
     token = get_nhifservice_token(company)
     
     nhifservice_url = frappe.get_value("Company NHIF Settings", company, "nhifservice_url")

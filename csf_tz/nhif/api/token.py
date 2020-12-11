@@ -65,3 +65,54 @@ def get_nhifservice_token(company):
 				continue
 			else:
 				raise e
+
+
+def get_claimsservice_token(company):
+	setting_doc = frappe.get_doc("Company NHIF Settings", company)
+	if setting_doc.claimsserver_expiry and setting_doc.claimsserver_expiry > now_datetime():
+		return setting_doc.claimsserver_token 
+
+	username = setting_doc.username
+	password = get_decrypted_password("Company NHIF Settings", company, "password")
+	payload = 'grant_type=password&username={0}&password={1}'.format(username, password)
+	headers = {
+		'Content-Type': 'application/x-www-form-urlencoded'
+	}
+	url = str(setting_doc.nhifservice_url) + "/claimsserver/Token" 
+
+	for i in range(3):
+		try:
+			r = requests.request("GET", url, headers = headers, data = payload, timeout = 5)
+			r.raise_for_status()
+			frappe.logger().debug({"webhook_success": r.text})
+			if json.loads(r.text):
+				add_log(
+					request_type = "token", 
+					request_url = url, 
+					request_header = headers, 
+					request_body = payload, 
+					response_data = json.loads(r.text) 
+				)
+			if json.loads(r.text)["token_type"] == "bearer":
+				token = json.loads(r.text)["access_token"]
+				expired = json.loads(r.text)["expires_in"]
+				expiry_date = add_to_date(now(),seconds= (expired - 1000))
+				setting_doc.claimsserver_token = token
+				setting_doc.claimsserver_expiry = expiry_date
+				setting_doc.db_update()
+				return token
+			else:
+				add_log(
+					request_type = "token", 
+					request_url = url, 
+					request_header = headers, 
+					request_body = payload, 
+				)
+				frappe.throw(json.loads(r.text))
+		except Exception as e:
+			frappe.logger().debug({"webhook_error": e, "try": i + 1})
+			sleep(3 * i + 1)
+			if i != 2:
+				continue
+			else:
+				raise e
