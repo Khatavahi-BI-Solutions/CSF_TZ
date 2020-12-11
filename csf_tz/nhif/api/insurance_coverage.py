@@ -53,43 +53,62 @@ def get_nhif_price_package():
             )
             time_stamp = now()
             data = json.loads(r.text)
+            insert_data = []
             for item in data.get("PricePackage"):
-                doc_pack = frappe.new_doc("NHIF Price Package")
-                doc_pack.facilitycode = facility_code
-                doc_pack.time_stamp = time_stamp
-                doc_pack.log_name = log_name
-                doc_pack.itemcode = item.get("ItemCode")
-                doc_pack.pricecode = item.get("PriceCode")
-                doc_pack.levelpricecode = item.get("LevelPriceCode")
-                doc_pack.olditemcode = item.get("OldItemCode")
-                doc_pack.itemtypeid = item.get("ItemTypeID")
-                doc_pack.itemname = item.get("ItemName")
-                doc_pack.strength = item.get("Strength")
-                doc_pack.dosage = item.get("Dosage")
-                doc_pack.packageid = item.get("PackageID")
-                doc_pack.schemeid = item.get("SchemeID")
-                doc_pack.facilitylevelcode = item.get("FacilityLevelCode")
-                doc_pack.unitprice = item.get("UnitPrice")
-                doc_pack.isrestricted = item.get("IsRestricted")
-                doc_pack.maximumquantity = item.get("MaximumQuantity")
-                doc_pack.availableinlevels = item.get("AvailableInLevels")
-                doc_pack.practitionerqualifications = item.get("PractitionerQualifications")
-                doc_pack.isactive = item.get("IsActive")
-                doc_pack.save(ignore_permissions=True)
-                console(doc_pack.name ,item.get("PriceCode"),item.get("ItemCode"), item.get("ItemName"))
+                insert_data.append((
+					frappe.generate_hash("", 20),
+                    facility_code,
+                    time_stamp,
+                    log_name,
+                    item.get("ItemCode"),
+                    item.get("PriceCode"),
+                    item.get("LevelPriceCode"),
+                    item.get("OldItemCode"),
+                    item.get("ItemTypeID"),
+                    item.get("ItemName"),
+                    item.get("Strength"),
+                    item.get("Dosage"),
+                    item.get("PackageID"),
+                    item.get("SchemeID"),
+                    item.get("FacilityLevelCode"),
+                    item.get("UnitPrice"),
+                    item.get("IsRestricted"),
+                    item.get("MaximumQuantity"),
+                    item.get("AvailableInLevels"),
+                    item.get("PractitionerQualifications"),
+                    item.get("IsActive"),
+				))
+            frappe.db.sql('''
+				INSERT INTO `tabNHIF Price Package`
+				(
+					`name`, `facilitycode`, `time_stamp`, `log_name`, `itemcode`, `pricecode`,
+					`levelpricecode`, `olditemcode`, `itemtypeid`, `itemname`, `strength`, 
+                    `dosage`, `packageid`, `schemeid`, `facilitylevelcode`, `unitprice`, 
+                    `isrestricted`, `maximumquantity`, `availableinlevels`, 
+                    `practitionerqualifications`, `IsActive`
+				)
+				VALUES {}
+			'''.format(', '.join(['%s'] * len(insert_data))), tuple(insert_data))
             frappe.db.commit()
+            insert_data = []
             for item in data.get("ExcludedServices"):
-                console(item.get("PriceCode"),item.get("SchemeID"), item.get("SchemeName"))
-                doc_exc = frappe.new_doc("NHIF Excluded Services")
-                doc_exc.facilitycode = facility_code
-                doc_exc.time_stamp = time_stamp
-                doc_exc.log_name = log_name
-                doc_exc.itemcode = item.get("ItemCode")
-                doc_exc.schemeid = item.get("SchemeID")
-                doc_exc.schemename = item.get("SchemeName")
-                doc_exc.excludedforproducts = item.get("ExcludedForProducts")
-                doc_exc.save(ignore_permissions=True)
-                console(item.get(doc_exc.name ,"PriceCode"),item.get("SchemeID"), item.get("SchemeName"))
-            frappe.db.commit()
+                insert_data.append((
+					frappe.generate_hash("", 20),
+                    facility_code,
+                    time_stamp,
+                    log_name,
+                    item.get("ItemCode"),
+                    item.get("SchemeID"),
+                    item.get("SchemeName"),
+                    item.get("ExcludedForProducts"),
+				))
+            frappe.db.sql('''
+				INSERT INTO `tabNHIF Excluded Services`
+				(
+					`name`, `facilitycode`, `time_stamp`, `log_name`, `itemcode`, `schemeid`,
+                    `schemename`, `excludedforproducts`
+				)
+				VALUES {}
+			'''.format(', '.join(['%s'] * len(insert_data))), tuple(insert_data))
             return data
 
