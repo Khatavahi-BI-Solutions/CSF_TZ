@@ -17,8 +17,9 @@ from csf_tz import console
 
 @frappe.whitelist()
 def enqueue_get_nhif_price_package(company):
-    enqueue(method=get_nhif_price_package, queue='long', timeout=10000000, is_async=True, kwargs = company)
+    # enqueue(method=get_nhif_price_package, queue='long', timeout=10000000, is_async=True, kwargs = company)
     frappe.msgprint(_("Start Getting NHIF Prices Packages"),alert=True)
+    process_prices_list(company)
     return
 
 
@@ -111,3 +112,94 @@ def get_nhif_price_package(kwargs):
             frappe.db.commit()
             return data
 
+
+def process_prices_list(company):
+    facility_code = frappe.get_value("Company NHIF Settings", company, "facility_code")
+    currency = frappe.get_value("Company", company, "default_currency")
+    schemeid_list = frappe.db.sql(
+        '''
+            SELECT schemeid from `tabNHIF Price Package`
+            WHERE facilitycode = {0}
+            GROUP BY schemeid
+        '''.format(facility_code), 
+        as_dict=1
+    )
+
+    for scheme in schemeid_list:
+        price_list_name = "NHIF-" + scheme.schemeid
+        if not frappe.db.exists("Price List", price_list_name):
+            price_list_doc = frappe.new_doc("Price List")
+            price_list_doc.price_list_name = price_list_name
+            price_list_doc.currency = currency
+            price_list_doc.buying = 0
+            price_list_doc.selling = 1
+            price_list_doc.save(ignore_permissions=True)
+            console(price_list_doc.name)
+
+    # price_package_list = frappe.db.sql(
+    #     '''
+    #         SELECT schemeid, itemcode, facilitylevelcode, unitprice, count(*) 
+    #         FROM `tabNHIF Price Package` 
+    #         WHERE facilitycode = {0} 
+    #         GROUP by itemcode , schemeid
+    #         HAVING count(*) = 1
+    #     '''.format(facility_code), 
+    #     as_dict=1
+    # )
+    
+    item_list = frappe.db.sql(
+        '''
+            SELECT ref_code, parent as item_code from `tabItem Customer Detail`
+            WHERE customer_name = 'NHIF'
+            GROUP by ref_code , parent
+        ''', 
+        as_dict=1
+    )
+    console(item_list)
+
+    for item in item_list:
+        for scheme in schemeid_list:
+            schemeid = scheme.schemeid 
+            price_list_name = "NHIF-" + schemeid
+            package_list = frappe.db.sql(
+                '''
+                    SELECT schemeid, itemcode, facilitylevelcode, unitprice, count(*) 
+                    FROM `tabNHIF Price Package` 
+                    WHERE facilitycode = {0} and schemeid = {1} and itemcode = {2}
+                    GROUP by itemcode , schemeid
+                    HAVING count(*) = 1
+                '''.format(facility_code,schemeid,item.ref_code), 
+                as_dict=1
+            )
+            console("package_list",package_list)
+            if len(package_list) > 0:
+                for package in package_list:
+                    item_price_list = frappe.get_all("Item Price", 
+                        filters={
+                            "price_list" : price_list_name,
+                            "item_code" : item.item_code,
+                            "currency": currency,
+                            "selling": 1
+                        },
+                        fields = ["name","price_list_rate"]
+                    )
+                    if len(item_price_list) > 0:
+                        for price in item_price_list:
+                            console("Exist pirce",price)
+                            if price.price_list_rate != float(package.unitprice):
+                                frappe.set_value("Item Price", price.name, "price_list_name", float(package.unitprice))
+                    else:
+                        console("ITEM PRICE unitprice", package.unitprice)
+                        item_price_doc = frappe.new_doc("Item Price")
+                        item_price_doc.item_code = item.item_code
+                        item_price_doc.price_list = price_list_name
+                        item_price_doc.currency = currency
+                        item_price_doc.price_list_rate = float(package.unitprice)
+                        item_price_doc.buying = 0
+                        item_price_doc.selling = 1
+                        item_price_doc.save(ignore_permissions=True)
+                        console("New pirce",item_price_doc.name)
+
+
+
+  
