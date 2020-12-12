@@ -178,7 +178,7 @@ def make_encounter(vital_doc, method):
                 ['appointment_type', 'appointment_type']
             ]
         }
-    }, target_doc)
+    }, target_doc, ignore_permissions=True)
 
     appointment_doc.save(ignore_permissions=True)
     frappe.msgprint(_('Patient Encounter {0} created'.format(
