@@ -150,7 +150,7 @@ def process_prices_list(company):
             price_list_name = "NHIF-" + schemeid
             package_list = frappe.db.sql(
                 '''
-                    SELECT schemeid, itemcode, unitprice, count(*) 
+                    SELECT schemeid, itemcode, unitprice, isactive, count(*) 
                     FROM `tabNHIF Price Package` 
                     WHERE facilitycode = {0} and schemeid = {1} and itemcode = {2}
                     GROUP by itemcode , schemeid
@@ -171,9 +171,13 @@ def process_prices_list(company):
                     )
                     if len(item_price_list) > 0:
                         for price in item_price_list:
-                            if price.price_list_rate != float(package.unitprice):
-                                frappe.set_value("Item Price", price.name, "price_list_name", float(package.unitprice))
-                    else:
+                            if int(package.isactive) == 1:
+                                if float(price.price_list_rate) != float(package.unitprice):
+                                    frappe.set_value("Item Price", price.name, "price_list_rate", float(package.unitprice))
+                            else:
+                                frappe.delete_doc("Item Price", price.name)
+
+                    elif int(package.isactive) == 1:
                         item_price_doc = frappe.new_doc("Item Price")
                         item_price_doc.item_code = item.item_code
                         item_price_doc.price_list = price_list_name
