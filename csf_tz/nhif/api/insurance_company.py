@@ -11,6 +11,7 @@ from csf_tz.nhif.doctype.nhif_product.nhif_product import add_product
 from csf_tz.nhif.doctype.nhif_scheme.nhif_scheme import add_scheme
 from frappe.utils import now
 from csf_tz.nhif.doctype.nhif_response_log.nhif_response_log import add_log
+from frappe.model.naming import set_new_name
 from csf_tz import console
 
 
@@ -24,6 +25,7 @@ def enqueue_get_nhif_price_package(company):
 
 def get_nhif_price_package(kwargs):
     company = kwargs
+    user = frappe.session.user
     frappe.db.sql("DELETE FROM `tabNHIF Price Package` WHERE name != 'ABC'")
     frappe.db.sql("DELETE FROM `tabNHIF Excluded Services` WHERE name != 'ABC'")
     frappe.db.commit()
@@ -76,6 +78,10 @@ def get_nhif_price_package(kwargs):
                     item.get("AvailableInLevels"),
                     item.get("PractitionerQualifications"),
                     item.get("IsActive"),
+                    time_stamp,
+                    time_stamp,
+                    user,
+                    user
 				))
             frappe.db.sql('''
 				INSERT INTO `tabNHIF Price Package`
@@ -84,7 +90,8 @@ def get_nhif_price_package(kwargs):
 					`levelpricecode`, `olditemcode`, `itemtypeid`, `itemname`, `strength`, 
                     `dosage`, `packageid`, `schemeid`, `facilitylevelcode`, `unitprice`, 
                     `isrestricted`, `maximumquantity`, `availableinlevels`, 
-                    `practitionerqualifications`, `IsActive`
+                    `practitionerqualifications`, `IsActive`, `creation`, `modified`,
+                    `modified_by`, `owner`
 				)
 				VALUES {}
 			'''.format(', '.join(['%s'] * len(insert_data))), tuple(insert_data))
@@ -99,17 +106,23 @@ def get_nhif_price_package(kwargs):
                     item.get("SchemeID"),
                     item.get("SchemeName"),
                     item.get("ExcludedForProducts"),
+                    time_stamp,
+                    time_stamp,
+                    user,
+                    user
 				))
             frappe.db.sql('''
 				INSERT INTO `tabNHIF Excluded Services`
 				(
 					`name`, `facilitycode`, `time_stamp`, `log_name`, `itemcode`, `schemeid`,
-                    `schemename`, `excludedforproducts`
+                    `schemename`, `excludedforproducts`, `creation`, `modified`,
+                    `modified_by`, `owner`
 				)
 				VALUES {}
 			'''.format(', '.join(['%s'] * len(insert_data))), tuple(insert_data))
             frappe.db.commit()
             process_prices_list(company)
+            process_insurance_coverages()
             return data
 
 
@@ -188,5 +201,135 @@ def process_prices_list(company):
                         item_price_doc.save(ignore_permissions=True)
 
 
+def get_insurance_coverage_items():
+    items_list = frappe.db.sql(
+        '''
+            SELECT 'Appointment Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
+            INNER JOIN `tabAppointment Type` m on icd.parent = m.out_patient_consulting_charge_item
+            WHERE icd.customer_name = 'NHIF'
+            GROUP by dt, m.name, icd.ref_code , icd.parent
+            UNION ALL
+            SELECT 'Appointment Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
+            INNER JOIN `tabAppointment Type` m on icd.parent = m.inpatient_visit_charge_item
+            WHERE icd.customer_name = 'NHIF'
+            GROUP by dt, m.name, icd.ref_code , icd.parent
+            UNION ALL
+            SELECT 'Clinical Procedure Template' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
+            INNER JOIN `tabClinical Procedure Template` m on icd.parent = m.item
+            WHERE icd.customer_name = 'NHIF'
+            GROUP by dt, m.name, icd.ref_code , icd.parent
+            UNION ALL
+            SELECT 'Therapy Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
+            INNER JOIN `tabTherapy Type` m on icd.parent = m.item
+            WHERE icd.customer_name = 'NHIF'
+            GROUP by dt, m.name, icd.ref_code , icd.parent
+            UNION ALL
+            SELECT 'Medication' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
+            INNER JOIN `tabMedication` m on icd.parent = m.item
+            WHERE icd.customer_name = 'NHIF'
+            GROUP by dt, m.name, icd.ref_code , icd.parent
+            UNION ALL
+            SELECT 'Lab Test Template' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
+            INNER JOIN `tabLab Test Template` m on icd.parent = m.item
+            WHERE icd.customer_name = 'NHIF'
+            GROUP by dt, m.name, icd.ref_code , icd.parent
+            UNION ALL
+            SELECT 'Radiology Examination Template' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
+            INNER JOIN `tabRadiology Examination Template` m on icd.parent = m.item
+            WHERE icd.customer_name = 'NHIF'
+            GROUP by dt, m.name, icd.ref_code , icd.parent
+            UNION ALL
+            SELECT 'Healthcare Service Unit Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
+            INNER JOIN `tabHealthcare Service Unit Type` m on icd.parent = m.item
+            WHERE icd.customer_name = 'NHIF'
+            GROUP by dt, m.name, icd.ref_code , icd.parent
+        ''', 
+        as_dict=1
+    )
+    return items_list
 
-  
+    
+def get_excluded_services(itemcode):
+    excluded_services = ""
+    excluded_services_list = frappe.get_all(
+        "NHIF Excluded Services",
+        filters = {
+            "itemcode": itemcode
+        }
+    )
+    if len(excluded_services_list) > 0:
+        excluded_services = excluded_services_list[0].excludedforproducts
+    return excluded_services
+
+
+def process_insurance_coverages():
+    items_list = get_insurance_coverage_items()
+    
+    coverage_plan_list = frappe.get_all(
+        "Healthcare Insurance Coverage Plan", 
+        filters = {"insurance_company_name":"NHIF", "is_active":1}
+    )
+
+    for plan in coverage_plan_list:
+        insert_data = []
+        time_stamp = now()
+        user = frappe.session.user
+        for item in items_list:
+            excluded_services = get_excluded_services(item.ref_code)
+            if plan.name not in excluded_services:
+                doc = frappe.new_doc("Healthcare Service Insurance Coverage")
+                doc.healthcare_service = item.dt
+                doc.healthcare_service_template = item.healthcare_service_template
+                doc.healthcare_insurance_coverage_plan = plan.name
+                doc.coverage = 100
+                doc.end_date = "2099-12-31"
+                doc.is_active = 1
+                doc.discount = 0
+                doc.maximum_number_of_claims = 0
+                set_new_name(doc)
+        
+                insert_data.append((
+                    doc.approval_mandatory_for_claim,
+                    doc.coverage,
+                    time_stamp,
+                    doc.discount,
+                    doc.end_date,
+                    doc.healthcare_insurance_coverage_plan,
+                    doc.healthcare_service, 
+                    doc.healthcare_service_template,
+                    doc.is_active,
+                    doc.manual_approval_only,
+                    doc.maximum_number_of_claims,
+                    time_stamp,
+                    user,
+                    doc.name,
+                    doc.naming_series,
+                    user,
+                    doc.start_date
+                ))
+    
+        frappe.db.sql("DELETE FROM `tabHealthcare Service Insurance Coverage` WHERE healthcare_insurance_coverage_plan = '{0}'".format(plan.name))
+
+        frappe.db.sql('''
+            INSERT INTO `tabHealthcare Service Insurance Coverage`
+            (
+                `approval_mandatory_for_claim`, 
+                `coverage`, 
+                `creation`, 
+                `discount`, 
+                `end_date`, 
+                `healthcare_insurance_coverage_plan`, 
+                `healthcare_service`, 
+                `healthcare_service_template`, 
+                `is_active`, 
+                `manual_approval_only`, 
+                `maximum_number_of_claims`, 
+                `modified`, 
+                `modified_by`, 
+                `name`, 
+                `naming_series`, 
+                `owner`, 
+                `start_date`
+            )
+            VALUES {}
+        '''.format(', '.join(['%s'] * len(insert_data))), tuple(insert_data))

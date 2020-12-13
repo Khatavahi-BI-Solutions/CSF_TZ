@@ -15,7 +15,7 @@ var add_get_price_btn = function(frm) {
             args: {company:frm.doc.company},
             callback: function (data) {
                 if (data.message) {
-                    console.log(data.message.ExcludedServices)
+                    console.log(data.message)
                 }
             }
         });
