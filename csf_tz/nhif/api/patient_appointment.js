@@ -204,7 +204,7 @@ frappe.ui.form.on('Patient Appointment', {
     update_primary_action: function(frm) {
         if (frm.is_new()) {
             if (!frm.doc.mode_of_payment && !frm.doc.insurance_subscription) {
-                frm.page.set_primary_action(__('Panding'), () => {
+                frm.page.set_primary_action(__('Pending'), () => {
                     frappe.show_alert({
                         message:__("Please select Insurance Subscription or Mode of Payment"),
                         indicator:'red'
