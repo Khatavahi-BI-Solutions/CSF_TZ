@@ -172,6 +172,12 @@ frappe.ui.form.on('Lab Prescription', {
         if (row.prescribe || !row.lab_test_code) {return}
         validate_stock_item(frm, row.lab_test_code)
     },
+    override_subscription: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.override_subscription == 0) {
+            frappe.model.set_value(cdt, cdn, "prescribe", 0)
+        }
+    },
 });
 
 frappe.ui.form.on('Radiology Procedure Prescription', {
@@ -185,6 +191,12 @@ frappe.ui.form.on('Radiology Procedure Prescription', {
         if (row.prescribe || !row.radiology_examination_template) {return}
         validate_stock_item(frm, row.radiology_examination_template)
     },
+    override_subscription: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.override_subscription == 0) {
+            frappe.model.set_value(cdt, cdn, "prescribe", 0)
+        }
+    },
 });
 
 frappe.ui.form.on('Procedure Prescription', {
@@ -197,6 +209,12 @@ frappe.ui.form.on('Procedure Prescription', {
         let row = frappe.get_doc(cdt, cdn);
         if (row.prescribe || !row.procedure) {return}
         validate_stock_item(frm, row.procedure)
+    },
+    override_subscription: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.override_subscription == 0) {
+            frappe.model.set_value(cdt, cdn, "prescribe", 0)
+        }
     },
 });
 
@@ -216,6 +234,12 @@ frappe.ui.form.on('Drug Prescription', {
         if (row.prescribe || !row.drug_code) {return}
         validate_stock_item(frm, row.drug_code, row.quantity)
     },
+    override_subscription: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.override_subscription == 0) {
+            frappe.model.set_value(cdt, cdn, "prescribe", 0)
+        }
+    },
 });
 
 frappe.ui.form.on('Therapy Plan Detail', {
@@ -228,6 +252,12 @@ frappe.ui.form.on('Therapy Plan Detail', {
         let row = frappe.get_doc(cdt, cdn);
         if (row.prescribe || !row.therapy_type) {return}
         validate_stock_item(frm, row.therapy_type)
+    },
+    override_subscription: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        if (row.override_subscription == 0) {
+            frappe.model.set_value(cdt, cdn, "prescribe", 0)
+        }
     },
 });
 
