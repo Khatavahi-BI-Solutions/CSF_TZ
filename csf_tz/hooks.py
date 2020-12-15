@@ -260,8 +260,6 @@ fixtures = [
 		"Customer-tax_id-label",
 		"Document Attachment-attachment-in_list_view",
 		"Healthcare Insurance Subscription-main-search_fields",
-		"Inpatient Record-insurance_subscription-reqd",
-		"Inpatient Record-medical_department-reqd",
 		"Medication-main-search_fields",
 		"Operation-image_field",
 		"Patient Appointment-radiology_examination_template-depends_on",
