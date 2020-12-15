@@ -204,45 +204,61 @@ def process_prices_list(company):
 def get_insurance_coverage_items():
     items_list = frappe.db.sql(
         '''
-            SELECT 'Appointment Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
-            INNER JOIN `tabAppointment Type` m on icd.parent = m.out_patient_consulting_charge_item
+            SELECT 'Appointment Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code
+            FROM `tabItem Customer Detail` icd
+            INNER JOIN `tabItem` i ON i.name = icd.parent and i.disabled = 0
+            INNER JOIN `tabAppointment Type` m ON icd.parent = m.out_patient_consulting_charge_item
             WHERE icd.customer_name = 'NHIF'
-            GROUP by dt, m.name, icd.ref_code , icd.parent
+            GROUP BY dt, m.name, icd.ref_code , icd.parent
             UNION ALL
-            SELECT 'Appointment Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
-            INNER JOIN `tabAppointment Type` m on icd.parent = m.inpatient_visit_charge_item
+            SELECT 'Appointment Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code
+            FROM `tabItem Customer Detail` icd
+            INNER JOIN `tabItem` i ON i.name = icd.parent and i.disabled = 0
+            INNER JOIN `tabAppointment Type` m ON icd.parent = m.inpatient_visit_charge_item
             WHERE icd.customer_name = 'NHIF'
-            GROUP by dt, m.name, icd.ref_code , icd.parent
+            GROUP BY dt, m.name, icd.ref_code , icd.parent
             UNION ALL
-            SELECT 'Clinical Procedure Template' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
-            INNER JOIN `tabClinical Procedure Template` m on icd.parent = m.item
+            SELECT 'Clinical Procedure Template' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code
+            FROM `tabItem Customer Detail` icd
+            INNER JOIN `tabItem` i ON i.name = icd.parent and i.disabled = 0
+            INNER JOIN `tabClinical Procedure Template` m ON icd.parent = m.item
             WHERE icd.customer_name = 'NHIF'
-            GROUP by dt, m.name, icd.ref_code , icd.parent
+            GROUP BY dt, m.name, icd.ref_code , icd.parent
             UNION ALL
-            SELECT 'Therapy Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
-            INNER JOIN `tabTherapy Type` m on icd.parent = m.item
+            SELECT 'Therapy Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code
+            FROM `tabItem Customer Detail` icd
+            INNER JOIN `tabItem` i ON i.name = icd.parent and i.disabled = 0
+            INNER JOIN `tabTherapy Type` m ON icd.parent = m.item
             WHERE icd.customer_name = 'NHIF'
-            GROUP by dt, m.name, icd.ref_code , icd.parent
+            GROUP BY dt, m.name, icd.ref_code , icd.parent
             UNION ALL
-            SELECT 'Medication' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
-            INNER JOIN `tabMedication` m on icd.parent = m.item
+            SELECT 'Medication' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code
+            FROM `tabItem Customer Detail` icd
+            INNER JOIN `tabItem` i ON i.name = icd.parent and i.disabled = 0
+            INNER JOIN `tabMedication` m ON icd.parent = m.item
             WHERE icd.customer_name = 'NHIF'
-            GROUP by dt, m.name, icd.ref_code , icd.parent
+            GROUP BY dt, m.name, icd.ref_code , icd.parent
             UNION ALL
-            SELECT 'Lab Test Template' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
-            INNER JOIN `tabLab Test Template` m on icd.parent = m.item
+            SELECT 'Lab Test Template' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code
+            FROM `tabItem Customer Detail` icd
+            INNER JOIN `tabItem` i ON i.name = icd.parent and i.disabled = 0
+            INNER JOIN `tabLab Test Template` m ON icd.parent = m.item
             WHERE icd.customer_name = 'NHIF'
-            GROUP by dt, m.name, icd.ref_code , icd.parent
+            GROUP BY dt, m.name, icd.ref_code , icd.parent
             UNION ALL
-            SELECT 'Radiology Examination Template' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
-            INNER JOIN `tabRadiology Examination Template` m on icd.parent = m.item
+            SELECT 'Radiology Examination Template' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code
+            FROM `tabItem Customer Detail` icd
+            INNER JOIN `tabItem` i ON i.name = icd.parent and i.disabled = 0
+            INNER JOIN `tabRadiology Examination Template` m ON icd.parent = m.item
             WHERE icd.customer_name = 'NHIF'
-            GROUP by dt, m.name, icd.ref_code , icd.parent
+            GROUP BY dt, m.name, icd.ref_code , icd.parent
             UNION ALL
-            SELECT 'Healthcare Service Unit Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code from `tabItem Customer Detail` icd
-            INNER JOIN `tabHealthcare Service Unit Type` m on icd.parent = m.item
+            SELECT 'Healthcare Service Unit Type' as dt, m.name as healthcare_service_template, icd.ref_code, icd.parent as item_code
+            FROM `tabItem Customer Detail` icd
+            INNER JOIN `tabItem` i ON i.name = icd.parent and i.disabled = 0
+            INNER JOIN `tabHealthcare Service Unit Type` m ON icd.parent = m.item
             WHERE icd.customer_name = 'NHIF'
-            GROUP by dt, m.name, icd.ref_code , icd.parent
+            GROUP BY dt, m.name, icd.ref_code , icd.parent
         ''', 
         as_dict=1
     )
@@ -264,7 +280,7 @@ def get_excluded_services(itemcode):
 
 def process_insurance_coverages():
     items_list = get_insurance_coverage_items()
-    
+
     coverage_plan_list = frappe.get_all(
         "Healthcare Insurance Coverage Plan", 
         filters = {"insurance_company_name":"NHIF", "is_active":1}
@@ -276,38 +292,40 @@ def process_insurance_coverages():
         user = frappe.session.user
         for item in items_list:
             excluded_services = get_excluded_services(item.ref_code)
-            if plan.name not in excluded_services:
-                doc = frappe.new_doc("Healthcare Service Insurance Coverage")
-                doc.healthcare_service = item.dt
-                doc.healthcare_service_template = item.healthcare_service_template
-                doc.healthcare_insurance_coverage_plan = plan.name
-                doc.coverage = 100
-                doc.end_date = "2099-12-31"
-                doc.is_active = 1
-                doc.discount = 0
-                doc.maximum_number_of_claims = 0
-                set_new_name(doc)
-        
-                insert_data.append((
-                    doc.approval_mandatory_for_claim,
-                    doc.coverage,
-                    time_stamp,
-                    doc.discount,
-                    doc.end_date,
-                    doc.healthcare_insurance_coverage_plan,
-                    doc.healthcare_service, 
-                    doc.healthcare_service_template,
-                    doc.is_active,
-                    doc.manual_approval_only,
-                    doc.maximum_number_of_claims,
-                    time_stamp,
-                    user,
-                    doc.name,
-                    doc.naming_series,
-                    user,
-                    doc.start_date
-                ))
-    
+            if excluded_services:
+                if plan.name in excluded_services:
+                    continue
+            doc = frappe.new_doc("Healthcare Service Insurance Coverage")
+            doc.healthcare_service = item.dt
+            doc.healthcare_service_template = item.healthcare_service_template
+            doc.healthcare_insurance_coverage_plan = plan.name
+            doc.coverage = 100
+            doc.end_date = "2099-12-31"
+            doc.is_active = 1
+            doc.discount = 0
+            doc.maximum_number_of_claims = 0
+            set_new_name(doc)
+
+            insert_data.append((
+                doc.approval_mandatory_for_claim,
+                doc.coverage,
+                time_stamp,
+                doc.discount,
+                doc.end_date,
+                doc.healthcare_insurance_coverage_plan,
+                doc.healthcare_service, 
+                doc.healthcare_service_template,
+                doc.is_active,
+                doc.manual_approval_only,
+                doc.maximum_number_of_claims,
+                time_stamp,
+                user,
+                doc.name,
+                doc.naming_series,
+                user,
+                doc.start_date
+            ))
+
         frappe.db.sql("DELETE FROM `tabHealthcare Service Insurance Coverage` WHERE healthcare_insurance_coverage_plan = '{0}'".format(plan.name))
 
         frappe.db.sql('''
