@@ -252,6 +252,28 @@ fixtures = [
 		"Patient Encounter-image",
 		"Vital Signs-image",
 		"Patient Appointment-patient_image2",
+		"Inpatient Record-patient_vitals",
+		"Inpatient Record-patient_vitals_summary",
+		"Inpatient Record-secondary_practitioner_name",
+		"Inpatient Record-primary_practitioner_name",
+		"Inpatient Record-practitioner_name",
+		"Inpatient Record-previous_diet_recommendation",
+		"Inpatient Record-previous_therapy_plan_detail",
+		"Inpatient Record-previous_drug_prescription",
+		"Inpatient Record-previous_clinical_procedures",
+		"Inpatient Record-inpatient_record_final_diagnosis",
+		"Inpatient Record-section_break_57",
+		"Inpatient Record-previous_radiology_procedure",
+		"Inpatient Record-previous_lab_tests",
+		"Inpatient Record-inpatient_record_preliminary_diagnosis",
+		"Inpatient Record-section_break_47",
+		"Inpatient Record-duplicated_from",
+		"Inpatient Record-reference_inpatient_record",
+		"Inpatient Record-column_break_45",
+		"Inpatient Record-duplicate",
+		"Inpatient Record-inpatient_record_type",
+		"Inpatient Record-reference",
+		"Patient Encounter-blood_group",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
@@ -338,6 +360,30 @@ fixtures = [
 		"Patient Appointment-main-image_field",
 		"Item-customer_details-collapsible_depends_on",
 		"Item-customer_details-collapsible",
+		"Healthcare Practitioner-main-search_fields",
+		"Customer-main-search_fields",
+		"Healthcare Practitioner-practitioner_name-in_global_search",
+		"Inpatient Record-drug_prescription-permlevel",
+		"Inpatient Record-encounter_details_section-collapsible",
+		"Inpatient Record-company-read_only",
+		"Inpatient Record-investigations_section-collapsible_depends_on",
+		"Inpatient Record-radiology_orders_section-collapsible_depends_on",
+		"Inpatient Record-rehabilitation_section-collapsible_depends_on",
+		"Inpatient Record-medication_section-collapsible_depends_on",
+		"Inpatient Record-procedures_section-collapsible_depends_on",
+		"Inpatient Record-medication_section-collapsible",
+		"Inpatient Record-diet_recommendation_section-collapsible",
+		"Inpatient Record-rehabilitation_section-collapsible",
+		"Inpatient Record-procedures_section-collapsible",
+		"Inpatient Record-radiology_orders_section-collapsible",
+		"Inpatient Record-investigations_section-collapsible",
+		"Inpatient Record-diagnosis-hidden",
+		"Inpatient Record-drug_prescription-label",
+		"Inpatient Record-medication_section-label",
+		"Inpatient Record-procedure_prescription-label"
+		"Inpatient Record-procedures_section-label",
+		"Inpatient Record-lab_test_prescription-label",
+		"Inpatient Record-investigations_section-label",
 	)]]},
 ]
 
@@ -398,9 +444,11 @@ doctype_js = {
 	"Healthcare Service Order": "nhif/api/service_order.js",
 	"Healthcare Insurance Company": "nhif/api/insurance_company.js",
 	"Vital Signs": "nhif/api/vital_signs.js",
+	"Inpatient Record": "nhif/api/inpatient_record.js",
 }
 #csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+inpatient_record_list_js = {"doctype" : "nhif/api/inpatient_record_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
