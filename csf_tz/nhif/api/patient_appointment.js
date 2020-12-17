@@ -4,6 +4,9 @@ frappe.ui.form.on('Patient Appointment', {
     onload: function (frm) {
         frm.trigger("mandatory_fields")
     },
+    billing_item: function (frm) {
+        frm.trigger("get_mop_amount")
+    },
     refresh: function (frm) {
         frm.trigger("update_primary_action")
         if (!frm.doc.invoiced && frm.doc.patient && frm.doc.mode_of_payment && !frm.doc.insurance_subscription) {
@@ -54,6 +57,7 @@ frappe.ui.form.on('Patient Appointment', {
     },
     practitioner: function (frm) {
         frm.trigger("get_consulting_charge_item")
+        frm.trigger('get_mop_amount')
     },
     mandatory_fields: function (frm) {
         frm.trigger("get_consulting_charge_item")
