@@ -18,22 +18,26 @@
   "date_of_birth",
   "gender",
   "column_break_10",
+  "company",
+  "posting_date",
   "cardno",
   "authorization_no",
   "section_break_8",
+  "folio_id",
   "facility_code",
   "claim_year",
-  "claimmonth",
-  "foliono",
+  "claim_month",
+  "folio_no",
+  "serial_no",
   "created_by",
-  "practitioner_no",
   "column_break_18",
+  "practitioner_no",
   "date_discharge",
   "date_admitted",
   "patient_type_code",
   "attendance_date",
-  "patient_file",
   "patient_file_no",
+  "patient_file",
   "section_break_28",
   "nhif_patient_claim_disease",
   "section_break_30",
@@ -93,22 +97,14 @@
   {
    "fieldname": "facility_code",
    "fieldtype": "Data",
-   "label": "Facility Code"
+   "label": "Facility Code",
+   "read_only": 1
   },
   {
    "fieldname": "claim_year",
    "fieldtype": "Int",
-   "label": "Claim Year"
-  },
-  {
-   "fieldname": "claimmonth",
-   "fieldtype": "Int",
-   "label": "ClaimMonth"
-  },
-  {
-   "fieldname": "foliono",
-   "fieldtype": "Int",
-   "label": "FolioNo"
+   "label": "Claim Year",
+   "read_only": 1
   },
   {
    "fetch_from": "patient.first_name",
@@ -127,35 +123,40 @@
   {
    "fieldname": "created_by",
    "fieldtype": "Data",
-   "label": "Created By"
+   "label": "Created By",
+   "read_only": 1
   },
   {
    "fieldname": "practitioner_no",
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Practitioner No"
+   "label": "Practitioner No",
+   "read_only": 1
   },
   {
    "fieldname": "date_discharge",
    "fieldtype": "Date",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Date Discharge"
+   "label": "Date Discharge",
+   "read_only": 1
   },
   {
    "fieldname": "date_admitted",
    "fieldtype": "Date",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Date Admitted"
+   "label": "Date Admitted",
+   "read_only": 1
   },
   {
    "fieldname": "patient_type_code",
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Patient Type Code"
+   "label": "Patient Type Code",
+   "read_only": 1
   },
   {
    "fetch_from": "patient_appointment.appointment_date",
@@ -184,10 +185,11 @@
   },
   {
    "fieldname": "patient_file_no",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Patient File No"
+   "label": "Patient File No",
+   "read_only": 1
   },
   {
    "fetch_from": "patient.mobile",
@@ -246,12 +248,50 @@
    "fieldtype": "Table",
    "label": "NHIF Patient Claim Item",
    "options": "NHIF Patient Claim Item"
+  },
+  {
+   "fieldname": "folio_id",
+   "fieldtype": "Data",
+   "label": "Folio ID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "patient_appointment.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Datetime",
+   "label": "Posting Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "claim_month",
+   "fieldtype": "Int",
+   "label": "Claim Month",
+   "read_only": 1
+  },
+  {
+   "fieldname": "folio_no",
+   "fieldtype": "Int",
+   "label": "Folio No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Data",
+   "label": "Serial No",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-12-17 06:35:47.453108",
+ "modified": "2020-12-17 20:47:23.231077",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Patient Claim",
