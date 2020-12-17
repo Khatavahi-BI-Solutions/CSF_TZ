@@ -1,0 +1,71 @@
+{
+ "actions": [],
+ "creation": "2020-12-17 03:35:48.012453",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "ref_foctype",
+  "ref_docname",
+  "folio_disease_id",
+  "folio_id",
+  "disease_code",
+  "created_by",
+  "date_created"
+ ],
+ "fields": [
+  {
+   "fieldname": "folio_disease_id",
+   "fieldtype": "Data",
+   "label": "Folio Disease ID"
+  },
+  {
+   "fieldname": "folio_id",
+   "fieldtype": "Data",
+   "label": "Folio ID"
+  },
+  {
+   "fieldname": "disease_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Disease Code"
+  },
+  {
+   "fieldname": "date_created",
+   "fieldtype": "Date",
+   "label": "Date Created"
+  },
+  {
+   "fieldname": "created_by",
+   "fieldtype": "Data",
+   "label": "Created By"
+  },
+  {
+   "fieldname": "ref_foctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Ref DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "ref_docname",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Ref DocName",
+   "options": "ref_foctype"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2020-12-17 03:41:26.269921",
+ "modified_by": "Administrator",
+ "module": "NHIF",
+ "name": "NHIF Patient Claim Disease",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
