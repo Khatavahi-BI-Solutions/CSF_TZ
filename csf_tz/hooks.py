@@ -398,9 +398,11 @@ doctype_js = {
 	"Healthcare Service Order": "nhif/api/service_order.js",
 	"Healthcare Insurance Company": "nhif/api/insurance_company.js",
 	"Vital Signs": "nhif/api/vital_signs.js",
+	"Inpatient Record": "nhif/api/inpatient_record.js",
 }
 #csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+inpatient_record_list_js = {"doctype" : "nhif/api/inpatient_record_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
