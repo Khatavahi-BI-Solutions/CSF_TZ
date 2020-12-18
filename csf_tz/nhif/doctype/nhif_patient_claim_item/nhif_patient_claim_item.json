@@ -5,10 +5,12 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "patient_encounter",
   "ref_doctype",
   "ref_docname",
   "folio_item_id",
   "folio_id",
+  "item_name",
   "item_code",
   "item_quantity",
   "unit_price",
@@ -18,20 +20,6 @@
   "created_by"
  ],
  "fields": [
-  {
-   "fieldname": "ref_doctype",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Ref DocType",
-   "options": "DocType"
-  },
-  {
-   "fieldname": "ref_docname",
-   "fieldtype": "Dynamic Link",
-   "in_list_view": 1,
-   "label": "Ref DocName",
-   "options": "ref_doctype"
-  },
   {
    "fieldname": "folio_item_id",
    "fieldtype": "Data",
@@ -80,12 +68,39 @@
    "fieldname": "created_by",
    "fieldtype": "Data",
    "label": "Created By"
+  },
+  {
+   "fieldname": "patient_encounter",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Patient Encounter",
+   "options": "Patient Encounter"
+  },
+  {
+   "fieldname": "ref_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Ref DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "ref_docname",
+   "fieldtype": "Dynamic Link",
+   "label": "Ref DocName",
+   "options": "ref_doctype"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2020-12-17 06:35:20.750557",
+ "modified": "2020-12-18 04:00:43.177905",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Patient Claim Item",

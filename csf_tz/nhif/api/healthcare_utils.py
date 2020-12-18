@@ -74,3 +74,45 @@ def get_healthcare_service_order_to_invoice(patient, company, encounter, service
 			
 
 	return services_to_invoice
+
+
+def get_item_price(item_code, price_list, company):
+    price = 0
+    company_currency = frappe.get_value("Company", company, "default_currency")
+    item_prices_data = frappe.get_all("Item Price",
+        fields=[
+            "item_code", "price_list_rate", "currency"],
+        filters={
+            'price_list': price_list, 'item_code': item_code, 'currency': company_currency},
+        order_by="valid_from desc"
+    )
+    if len(item_prices_data):
+        price = item_prices_data[0].price_list_rate
+    return price
+
+
+def get_item_rate(item_code, company, insurance_subscription, insurance_company):
+    price_list = None
+    price_list_rate = None
+    if  insurance_subscription:
+        hic_plan = frappe.get_value(
+            "Healthcare Insurance Subscription", insurance_subscription, "healthcare_insurance_coverage_plan")
+        price_list = frappe.get_value(
+            "Healthcare Insurance Coverage Plan", hic_plan, "price_list")
+        if price_list:
+            price_list_rate = get_item_price(item_code, price_list, company)
+            if price_list_rate and price_list_rate != 0:
+                return price_list_rate
+            else:
+                price_list_rate = None
+                
+    if not price_list_rate and insurance_company:
+        price_list = frappe.get_value(
+        "Healthcare Insurance Company", insurance_company, "default_price_list")
+    if not price_list:
+            frappe.throw(_("Please set Price List in Healthcare Insurance Coverage Plan"))
+    else:
+        price_list_rate = get_item_price(item_code, price_list, company)
+    if price_list_rate == 0:
+        frappe.throw(_("Please set Price List for item: {0}").format(item_code))
+    return price_list_rate

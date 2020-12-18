@@ -237,7 +237,8 @@
    "fieldname": "nhif_patient_claim_disease",
    "fieldtype": "Table",
    "label": "NHIF Patient Claim Disease",
-   "options": "NHIF Patient Claim Disease"
+   "options": "NHIF Patient Claim Disease",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_30",
@@ -291,7 +292,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-12-17 20:47:23.231077",
+ "modified": "2020-12-17 23:25:46.529443",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Patient Claim",
