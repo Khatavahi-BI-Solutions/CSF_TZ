@@ -196,6 +196,26 @@ class NHIFPatientClaim(Document):
 				new_row.date_created = row.modified.strftime("%Y-%m-%d")
 				new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
 
+		for row in encounter_doc.therapies:
+				if row.prescribe:
+					continue
+				item_code = frappe.get_value("Therapy Type", row.therapy_type, "item")
+				item_rate = get_item_rate(item_code, self.company, encounter_doc.insurance_subscription, encounter_doc.insurance_company)
+				new_row = self.append("nhif_patient_claim_item", {})
+				new_row.item_name = row.therapy_type
+				new_row.item_code = get_item_refcode(item_code)
+				new_row.item_quantity = row.quantity
+				new_row.unit_price = item_rate
+				new_row.amount_claime = item_rate * new_row.item_quantity
+				new_row.approval_ref_no = row.comment
+				new_row.patient_encounter = encounter.name
+				new_row.ref_doctype = row.doctype
+				new_row.ref_docname = row.name
+				new_row.folio_item_id = str(uuid.uuid1())
+				new_row.folio_id = self.folio_id
+				new_row.date_created = row.modified.strftime("%Y-%m-%d")
+				new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
+
 
 	def get_final_patient_encounter(self):
 		patient_encounter_list = frappe.get_all("Patient Encounter",
