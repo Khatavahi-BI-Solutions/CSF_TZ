@@ -5,89 +5,108 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "patient_encounter",
   "ref_doctype",
-  "ref_docname",
-  "folio_item_id",
-  "folio_id",
   "item_name",
   "item_code",
   "item_quantity",
   "unit_price",
   "amount_claime",
+  "created_by",
+  "column_break_8",
+  "patient_encounter",
+  "ref_docname",
   "approval_ref_no",
-  "date_created",
-  "created_by"
+  "folio_item_id",
+  "folio_id",
+  "date_created"
  ],
  "fields": [
   {
    "fieldname": "folio_item_id",
    "fieldtype": "Data",
-   "label": "Folio Item ID"
+   "label": "Folio Item ID",
+   "read_only": 1
   },
   {
    "fieldname": "folio_id",
    "fieldtype": "Data",
-   "label": "Folio ID"
+   "label": "Folio ID",
+   "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "item_code",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Item Code"
+   "label": "Item Code",
+   "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "item_quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Item Quantity"
+   "label": "Item Quantity",
+   "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "unit_price",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Unit Price"
+   "label": "Unit Price",
+   "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "amount_claime",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Amount Claime"
+   "label": "Amount Claime",
+   "read_only": 1
   },
   {
    "fieldname": "approval_ref_no",
    "fieldtype": "Data",
-   "label": "Approval Ref No"
+   "in_list_view": 1,
+   "label": "Approval Ref No",
+   "read_only": 1
   },
   {
    "fieldname": "date_created",
    "fieldtype": "Date",
-   "label": "Date Created"
+   "label": "Date Created",
+   "read_only": 1
   },
   {
    "fieldname": "created_by",
    "fieldtype": "Data",
-   "label": "Created By"
+   "in_list_view": 1,
+   "label": "Created By",
+   "read_only": 1
   },
   {
    "fieldname": "patient_encounter",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Patient Encounter",
-   "options": "Patient Encounter"
+   "options": "Patient Encounter",
+   "read_only": 1
   },
   {
    "fieldname": "ref_doctype",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Ref DocType",
-   "options": "DocType"
+   "options": "DocType",
+   "read_only": 1
   },
   {
    "fieldname": "ref_docname",
    "fieldtype": "Dynamic Link",
    "label": "Ref DocName",
-   "options": "ref_doctype"
+   "options": "ref_doctype",
+   "read_only": 1
   },
   {
    "fieldname": "item_name",
@@ -95,12 +114,17 @@
    "in_list_view": 1,
    "label": "Item Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2020-12-18 04:00:43.177905",
+ "modified": "2020-12-19 02:13:40.637951",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Patient Claim Item",

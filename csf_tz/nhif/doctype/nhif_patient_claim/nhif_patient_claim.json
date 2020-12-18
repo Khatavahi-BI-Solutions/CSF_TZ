@@ -248,7 +248,8 @@
    "fieldname": "nhif_patient_claim_item",
    "fieldtype": "Table",
    "label": "NHIF Patient Claim Item",
-   "options": "NHIF Patient Claim Item"
+   "options": "NHIF Patient Claim Item",
+   "read_only": 1
   },
   {
    "fieldname": "folio_id",
@@ -292,7 +293,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-12-17 23:25:46.529443",
+ "modified": "2020-12-19 02:12:31.404057",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Patient Claim",
