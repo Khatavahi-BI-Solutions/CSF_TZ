@@ -18,7 +18,9 @@ from csf_tz import console
 
 class NHIFPatientClaim(Document):
 	def validate(self):
+		self.patient_encounters = self.get_patient_encounters()
 		self.set_claim_values()
+		self.set_patient_claim_item()
 
 
 	def set_claim_values(self):
@@ -54,11 +56,9 @@ class NHIFPatientClaim(Document):
 
 
 	def set_patient_claim_disease(self):
-		patient_encounters = self.get_patient_encounters()
 		self.nhif_patient_claim_disease = []
-		self.nhif_patient_claim_item = []
 		diagnosis_list = []
-		for encounter in patient_encounters:
+		for encounter in self.patient_encounters:
 			encounter_doc = frappe.get_doc("Patient Encounter", encounter.name)
 			for row in encounter_doc.patient_encounter_preliminary_diagnosis:
 				if row.code in diagnosis_list:
@@ -90,6 +90,12 @@ class NHIFPatientClaim(Document):
 				new_row.description = row.description
 				new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
 				new_row.date_created = row.modified.strftime("%Y-%m-%d")
+
+
+	def set_patient_claim_item(self):
+		self.nhif_patient_claim_item = []
+		for encounter in self.patient_encounters:
+			encounter_doc = frappe.get_doc("Patient Encounter", encounter.name)
 			for row in encounter_doc.lab_test_prescription:
 				if row.prescribe:
 					continue
