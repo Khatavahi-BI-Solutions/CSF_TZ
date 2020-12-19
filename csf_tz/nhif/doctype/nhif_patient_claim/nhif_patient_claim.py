@@ -21,6 +21,10 @@ class NHIFPatientClaim(Document):
 		self.patient_encounters = self.get_patient_encounters()
 		self.set_claim_values()
 		self.set_patient_claim_item()
+	
+	def before_submit(self):
+		if not self.patient_signature:
+			frappe.throw(_("Patient signature is required"))
 
 
 	def set_claim_values(self):
