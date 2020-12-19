@@ -14,12 +14,17 @@ from frappe.utils.background_jobs import enqueue
 from frappe.utils import now, now_datetime, nowdate
 from csf_tz.nhif.doctype.nhif_response_log.nhif_response_log import add_log
 from csf_tz.nhif.api.healthcare_utils import get_item_rate
+import os
+from frappe.utils.background_jobs import enqueue
+from frappe.utils.pdf import get_pdf, cleanup
+from PyPDF2 import PdfFileWriter
 from csf_tz import console
 
 class NHIFPatientClaim(Document):
 	def validate(self):
 		self.patient_encounters = self.get_patient_encounters()
 		self.set_claim_values()
+		enqueue_generate_pdf(self)
 		
 	
 	def before_submit(self):
@@ -219,3 +224,68 @@ def get_item_refcode(item_code):
 		frappe.throw(_("Item {0} has not NHIF Code Reference").format(item_code))
 	return ref_code
 
+
+
+def enqueue_generate_pdf(doc):
+    enqueue(method=generate_pdf, queue='short', timeout=100000, is_async=True ,job_name="print_salary_slips", kwargs=doc )
+
+
+def generate_pdf(kwargs):
+	doc = kwargs
+	doc_name = doc.name
+	data = doc.patient_encounters
+	data_list = []
+	for i in data:
+		data_list.append(i.name)
+	doctype = dict(
+		{"Patient Encounter": data_list}
+	)
+	print_format = ""
+	default_print_format = frappe.db.get_value('Property Setter', dict(property='default_print_format', doc_type="Patient Encounter"), "value")
+	if default_print_format:
+		print_format = default_print_format
+	else:
+		print_format = "Standard"
+
+	pdf = download_multi_pdf(doctype, doc_name,
+								format=print_format, no_letterhead=0)
+	if pdf:
+		ret = frappe.get_doc({
+			"doctype": "File",
+			"attached_to_doctype": "NHIF Patient Claim",
+			"attached_to_name": doc_name,
+			"folder": "Home/Attachments",
+			"file_name": doc_name + ".pdf",
+			"file_url": "/files/" + doc_name + ".pdf",
+			"content": pdf
+		})
+		ret.save(ignore_permissions=1)
+		return ret
+
+
+def download_multi_pdf(doctype, name, format=None, no_letterhead=0):
+    output = PdfFileWriter()
+    if isinstance(doctype, dict):
+        for doctype_name in doctype:
+            for doc_name in doctype[doctype_name]:
+                try:
+                    console(doc_name)
+                    output = frappe.get_print(
+                        doctype_name, doc_name, format, as_pdf=True, output=output, no_letterhead=no_letterhead)
+                except Exception:
+                    frappe.log_error("Permission Error on doc {} of doctype {}".format(
+                        doc_name, doctype_name))
+        frappe.local.response.filename = "{}.pdf".format(name)
+
+    return read_multi_pdf(output)
+
+
+def read_multi_pdf(output):
+    fname = os.path.join(
+        "/tmp", "frappe-pdf-{0}.pdf".format(frappe.generate_hash()))
+    output.write(open(fname, "wb"))
+
+    with open(fname, "rb") as fileobj:
+        filedata = fileobj.read()
+
+    return filedata
