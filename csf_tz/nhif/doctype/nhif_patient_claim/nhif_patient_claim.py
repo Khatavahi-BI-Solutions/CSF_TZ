@@ -20,7 +20,7 @@ class NHIFPatientClaim(Document):
 	def validate(self):
 		self.patient_encounters = self.get_patient_encounters()
 		self.set_claim_values()
-		self.set_patient_claim_item()
+		
 	
 	def before_submit(self):
 		if not self.patient_signature:
@@ -47,6 +47,7 @@ class NHIFPatientClaim(Document):
 		self.patient_type_code = "OUTPATIENT" if appointment_type != "In Patient" else "IN PATIENT"
 		self.patient_file_no = self.get_patient_file_no()
 		self.set_patient_claim_disease()
+		self.set_patient_claim_item()
 
 
 	def get_patient_encounters(self):
@@ -153,6 +154,13 @@ class NHIFPatientClaim(Document):
 					new_row.date_created = row.modified.strftime("%Y-%m-%d")
 					new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
 		
+		sorted_patient_claim_item = sorted(self.nhif_patient_claim_item, key=lambda k: k.get("ref_doctype"))
+		idx = 2
+		for row in sorted_patient_claim_item:
+			row.idx = idx
+			idx += 1
+		self.nhif_patient_claim_item = sorted_patient_claim_item
+
 		patient_appointment_doc = frappe.get_doc("Patient Appointment", self.patient_appointment)
 		item_code = patient_appointment_doc.billing_item
 		item_rate = get_item_rate(item_code, self.company, patient_appointment_doc.insurance_subscription, patient_appointment_doc.insurance_company)
@@ -169,13 +177,8 @@ class NHIFPatientClaim(Document):
 		new_row.folio_id = self.folio_id
 		new_row.date_created = patient_appointment_doc.modified.strftime("%Y-%m-%d")
 		new_row.created_by = frappe.get_value("User", patient_appointment_doc.modified_by, "full_name")
+		new_row.idx = 1
 		
-		sorted_patient_claim_item = sorted(self.nhif_patient_claim_item, key=lambda k: k.get("ref_doctype"))
-		idx = 1
-		for row in sorted_patient_claim_item:
-			row.idx = idx
-			idx += 1
-		self.nhif_patient_claim_item = sorted_patient_claim_item
 				
 
 
