@@ -23,12 +23,16 @@ class NHIFPatientClaim(Document):
 	def validate(self):
 		self.patient_encounters = self.get_patient_encounters()
 		self.set_claim_values()
-		self.patient_file = generate_pdf(self)
 		
 	
 	def before_submit(self):
 		if not self.patient_signature:
 			frappe.throw(_("Patient signature is required"))
+		self.patient_file = generate_pdf(self)
+
+
+	def on_submit(self):
+		frappe.set_value("Patient Appointment", self.patient_appointment, "nhif_patient_claim", self.name)
 
 
 	def set_claim_values(self):

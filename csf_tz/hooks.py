@@ -274,6 +274,7 @@ fixtures = [
 		"Inpatient Record-inpatient_record_type",
 		"Inpatient Record-reference",
 		"Patient Encounter-blood_group",
+		"Patient Appointment-nhif_patient_claim",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",

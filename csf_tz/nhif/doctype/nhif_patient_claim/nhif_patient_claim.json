@@ -103,8 +103,7 @@
    "fieldname": "facility_code",
    "fieldtype": "Data",
    "label": "Facility Code",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "claim_year",
@@ -315,7 +314,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-12-19 22:50:44.649202",
+ "modified": "2020-12-19 23:42:47.064631",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Patient Claim",
