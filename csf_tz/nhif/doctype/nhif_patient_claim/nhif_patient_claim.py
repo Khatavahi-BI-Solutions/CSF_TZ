@@ -93,128 +93,68 @@ class NHIFPatientClaim(Document):
 
 
 	def set_patient_claim_item(self):
+		childs_map = [
+			{
+				"table": "lab_test_prescription",
+				"doctype": "Lab Test Template",
+				"item": "lab_test_code",
+				"comment": "lab_test_comment"
+			},
+			{
+				"table": "radiology_procedure_prescription",
+				"doctype": "Radiology Examination Template",
+				"item": "radiology_examination_template",
+				"comment": "radiology_test_comment"
+			},
+			{
+				"table": "procedure_prescription",
+				"doctype": "Clinical Procedure Template",
+				"item": "procedure",
+				"comment": "comments"
+			},
+			{
+				"table": "radiology_procedure_prescription",
+				"doctype": "Radiology Examination Template",
+				"item": "radiology_examination_template",
+				"comment": "radiology_test_comment"
+			},
+			{
+				"table": "drug_prescription",
+				"doctype": "Medication",
+				"item": "drug_code",
+				"comment": "comment"
+			},
+			{
+				"table": "therapies",
+				"doctype": "Therapy Type",
+				"item": "therapy_type",
+				"comment": "comment"
+			}
+    	]
 		self.nhif_patient_claim_item = []
 		for encounter in self.patient_encounters:
 			encounter_doc = frappe.get_doc("Patient Encounter", encounter.name)
-			for row in encounter_doc.lab_test_prescription:
-				if row.prescribe:
-					continue
-				item_code = frappe.get_value("Lab Test Template", row.lab_test_code, "item")
-				item_rate = get_item_rate(item_code, self.company, encounter_doc.insurance_subscription, encounter_doc.insurance_company)
-				new_row = self.append("nhif_patient_claim_item", {})
-				new_row.item_name = row.lab_test_name
-				new_row.item_code = get_item_refcode(item_code)
-				new_row.item_quantity = 1
-				new_row.unit_price = item_rate
-				new_row.amount_claime = item_rate * new_row.item_quantity
-				new_row.approval_ref_no = row.lab_test_comment
-				new_row.patient_encounter = encounter.name
-				new_row.ref_doctype = row.doctype
-				new_row.ref_docname = row.name
-				new_row.folio_item_id = str(uuid.uuid1())
-				new_row.folio_id = self.folio_id
-				new_row.date_created = row.modified.strftime("%Y-%m-%d")
-				new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
+			for i in childs_map:
+				for row in encounter_doc.get(i.get("table")):
+					if row.prescribe:
+						continue
+					item_code = frappe.get_value(i.get("doctype"), row.get(i.get("item")), "item")
+					item_rate = get_item_rate(item_code, self.company, encounter_doc.insurance_subscription, encounter_doc.insurance_company)
+					new_row = self.append("nhif_patient_claim_item", {})
+					new_row.item_name = row.get(i.get("item"))
+					new_row.item_code = get_item_refcode(item_code)
+					new_row.item_quantity = 1
+					new_row.unit_price = item_rate
+					new_row.amount_claime = item_rate * new_row.item_quantity
+					new_row.approval_ref_no = row.get(i.get("comment"))
+					new_row.patient_encounter = encounter.name
+					new_row.ref_doctype = row.doctype
+					new_row.ref_docname = row.name
+					new_row.folio_item_id = str(uuid.uuid1())
+					new_row.folio_id = self.folio_id
+					new_row.date_created = row.modified.strftime("%Y-%m-%d")
+					new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
 				
-		for row in encounter_doc.radiology_procedure_prescription:
-				if row.prescribe:
-					continue
-				item_code = frappe.get_value("Radiology Examination Template", row.radiology_examination_template, "item")
-				item_rate = get_item_rate(item_code, self.company, encounter_doc.insurance_subscription, encounter_doc.insurance_company)
-				new_row = self.append("nhif_patient_claim_item", {})
-				new_row.item_name = row.radiology_examination_template
-				new_row.item_code = get_item_refcode(item_code)
-				new_row.item_quantity = 1
-				new_row.unit_price = item_rate
-				new_row.amount_claime = item_rate * new_row.item_quantity
-				new_row.approval_ref_no = row.radiology_test_comment
-				new_row.patient_encounter = encounter.name
-				new_row.ref_doctype = row.doctype
-				new_row.ref_docname = row.name
-				new_row.folio_item_id = str(uuid.uuid1())
-				new_row.folio_id = self.folio_id
-				new_row.date_created = row.modified.strftime("%Y-%m-%d")
-				new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
-		
-		for row in encounter_doc.procedure_prescription:
-				if row.prescribe:
-					continue
-				item_code = frappe.get_value("Clinical Procedure Template", row.procedure, "item")
-				item_rate = get_item_rate(item_code, self.company, encounter_doc.insurance_subscription, encounter_doc.insurance_company)
-				new_row = self.append("nhif_patient_claim_item", {})
-				new_row.item_name = row.procedure
-				new_row.item_code = get_item_refcode(item_code)
-				new_row.item_quantity = 1
-				new_row.unit_price = item_rate
-				new_row.amount_claime = item_rate * new_row.item_quantity
-				new_row.approval_ref_no = row.comments
-				new_row.patient_encounter = encounter.name
-				new_row.ref_doctype = row.doctype
-				new_row.ref_docname = row.name
-				new_row.folio_item_id = str(uuid.uuid1())
-				new_row.folio_id = self.folio_id
-				new_row.date_created = row.modified.strftime("%Y-%m-%d")
-				new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
-
-		for row in encounter_doc.radiology_procedure_prescription:
-				if row.prescribe:
-					continue
-				item_code = frappe.get_value("Radiology Examination Template", row.radiology_examination_template, "item")
-				item_rate = get_item_rate(item_code, self.company, encounter_doc.insurance_subscription, encounter_doc.insurance_company)
-				new_row = self.append("nhif_patient_claim_item", {})
-				new_row.item_name = row.radiology_examination_template
-				new_row.item_code = get_item_refcode(item_code)
-				new_row.item_quantity = 1
-				new_row.unit_price = item_rate
-				new_row.amount_claime = item_rate * new_row.item_quantity
-				new_row.approval_ref_no = row.radiology_test_comment
-				new_row.patient_encounter = encounter.name
-				new_row.ref_doctype = row.doctype
-				new_row.ref_docname = row.name
-				new_row.folio_item_id = str(uuid.uuid1())
-				new_row.folio_id = self.folio_id
-				new_row.date_created = row.modified.strftime("%Y-%m-%d")
-				new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
-		
-		for row in encounter_doc.drug_prescription:
-				if row.prescribe:
-					continue
-				item_code = frappe.get_value("Medication", row.drug_code, "item")
-				item_rate = get_item_rate(item_code, self.company, encounter_doc.insurance_subscription, encounter_doc.insurance_company)
-				new_row = self.append("nhif_patient_claim_item", {})
-				new_row.item_name = row.drug_code
-				new_row.item_code = get_item_refcode(item_code)
-				new_row.item_quantity = row.quantity
-				new_row.unit_price = item_rate
-				new_row.amount_claime = item_rate * new_row.item_quantity
-				new_row.approval_ref_no = row.comment
-				new_row.patient_encounter = encounter.name
-				new_row.ref_doctype = row.doctype
-				new_row.ref_docname = row.name
-				new_row.folio_item_id = str(uuid.uuid1())
-				new_row.folio_id = self.folio_id
-				new_row.date_created = row.modified.strftime("%Y-%m-%d")
-				new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
-
-		for row in encounter_doc.therapies:
-				if row.prescribe:
-					continue
-				item_code = frappe.get_value("Therapy Type", row.therapy_type, "item")
-				item_rate = get_item_rate(item_code, self.company, encounter_doc.insurance_subscription, encounter_doc.insurance_company)
-				new_row = self.append("nhif_patient_claim_item", {})
-				new_row.item_name = row.therapy_type
-				new_row.item_code = get_item_refcode(item_code)
-				new_row.item_quantity = row.quantity
-				new_row.unit_price = item_rate
-				new_row.amount_claime = item_rate * new_row.item_quantity
-				new_row.approval_ref_no = row.comment
-				new_row.patient_encounter = encounter.name
-				new_row.ref_doctype = row.doctype
-				new_row.ref_docname = row.name
-				new_row.folio_item_id = str(uuid.uuid1())
-				new_row.folio_id = self.folio_id
-				new_row.date_created = row.modified.strftime("%Y-%m-%d")
-				new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
 
 
 	def get_final_patient_encounter(self):
