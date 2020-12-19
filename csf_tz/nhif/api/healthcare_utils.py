@@ -10,6 +10,7 @@ from erpnext.healthcare.doctype.healthcare_settings.healthcare_settings import g
 from erpnext.healthcare.utils import validate_customer_created
 from csf_tz.nhif.api.patient_appointment import get_insurance_amount
 from csf_tz import console
+import base64
 
 
 @frappe.whitelist()
@@ -116,3 +117,8 @@ def get_item_rate(item_code, company, insurance_subscription, insurance_company)
     if price_list_rate == 0:
         frappe.throw(_("Please set Price List for item: {0}").format(item_code))
     return price_list_rate
+
+
+def to_base64(value):
+    data = base64.b64encode(value)
+    return str(data)[2:-1]

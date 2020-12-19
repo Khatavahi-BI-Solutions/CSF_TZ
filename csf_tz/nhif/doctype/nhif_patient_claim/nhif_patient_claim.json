@@ -38,6 +38,7 @@
   "patient_type_code",
   "attendance_date",
   "patient_file_no",
+  "patient_file_section",
   "patient_file",
   "section_break_28",
   "nhif_patient_claim_disease",
@@ -184,10 +185,12 @@
   },
   {
    "fieldname": "patient_file",
-   "fieldtype": "Text",
-   "hidden": 1,
+   "fieldtype": "Markdown Editor",
    "label": "Patient File",
-   "read_only": 1
+   "no_copy": 1,
+   "print_hide": 1,
+   "read_only": 1,
+   "report_hide": 1
   },
   {
    "fieldname": "patient_file_no",
@@ -299,12 +302,20 @@
    "fieldname": "patient_signature",
    "fieldtype": "Signature",
    "label": "Patient Signature"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "patient_file_section",
+   "fieldtype": "Section Break",
+   "label": "Patient File",
+   "print_hide": 1,
+   "report_hide": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-12-19 18:18:58.132945",
+ "modified": "2020-12-19 22:50:44.649202",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Patient Claim",

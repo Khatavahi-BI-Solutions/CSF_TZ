@@ -13,9 +13,8 @@ import requests
 from frappe.utils.background_jobs import enqueue
 from frappe.utils import now, now_datetime, nowdate
 from csf_tz.nhif.doctype.nhif_response_log.nhif_response_log import add_log
-from csf_tz.nhif.api.healthcare_utils import get_item_rate
+from csf_tz.nhif.api.healthcare_utils import get_item_rate, to_base64
 import os
-from frappe.utils.background_jobs import enqueue
 from frappe.utils.pdf import get_pdf, cleanup
 from PyPDF2 import PdfFileWriter
 from csf_tz import console
@@ -24,7 +23,7 @@ class NHIFPatientClaim(Document):
 	def validate(self):
 		self.patient_encounters = self.get_patient_encounters()
 		self.set_claim_values()
-		enqueue_generate_pdf(self)
+		self.patient_file = generate_pdf(self)
 		
 	
 	def before_submit(self):
@@ -225,13 +224,7 @@ def get_item_refcode(item_code):
 	return ref_code
 
 
-
-def enqueue_generate_pdf(doc):
-    enqueue(method=generate_pdf, queue='short', timeout=100000, is_async=True ,job_name="print_salary_slips", kwargs=doc )
-
-
-def generate_pdf(kwargs):
-	doc = kwargs
+def generate_pdf(doc):
 	doc_name = doc.name
 	data = doc.patient_encounters
 	data_list = []
@@ -260,7 +253,8 @@ def generate_pdf(kwargs):
 			"content": pdf
 		})
 		ret.save(ignore_permissions=1)
-		return ret
+		base64_data = to_base64(pdf)
+		return base64_data
 
 
 def download_multi_pdf(doctype, name, format=None, no_letterhead=0):
