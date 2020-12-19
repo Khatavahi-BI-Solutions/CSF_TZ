@@ -22,6 +22,7 @@
   "posting_date",
   "cardno",
   "authorization_no",
+  "patient_signature",
   "section_break_8",
   "folio_id",
   "facility_code",
@@ -91,8 +92,10 @@
    "read_only": 1
   },
   {
+   "collapsible": 1,
    "fieldname": "section_break_8",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Folio Info"
   },
   {
    "fieldname": "facility_code",
@@ -288,12 +291,17 @@
    "fieldtype": "Data",
    "label": "Serial No",
    "read_only": 1
+  },
+  {
+   "fieldname": "patient_signature",
+   "fieldtype": "Signature",
+   "label": "Patient Signature"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-12-19 02:12:31.404057",
+ "modified": "2020-12-19 17:44:47.210373",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Patient Claim",

@@ -113,12 +113,6 @@ class NHIFPatientClaim(Document):
 				"comment": "comments"
 			},
 			{
-				"table": "radiology_procedure_prescription",
-				"doctype": "Radiology Examination Template",
-				"item": "radiology_examination_template",
-				"comment": "radiology_test_comment"
-			},
-			{
 				"table": "drug_prescription",
 				"doctype": "Medication",
 				"item": "drug_code",
@@ -154,6 +148,12 @@ class NHIFPatientClaim(Document):
 					new_row.folio_id = self.folio_id
 					new_row.date_created = row.modified.strftime("%Y-%m-%d")
 					new_row.created_by = frappe.get_value("User", row.modified_by, "full_name")
+		sorted_patient_claim_item = sorted(self.nhif_patient_claim_item, key=lambda k: k.get("ref_doctype"))
+		idx = 1
+		for row in sorted_patient_claim_item:
+			row.idx = idx
+			idx += 1
+		self.nhif_patient_claim_item = sorted_patient_claim_item
 				
 
 
