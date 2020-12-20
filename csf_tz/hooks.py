@@ -274,6 +274,10 @@ fixtures = [
 		"Inpatient Record-inpatient_record_type",
 		"Inpatient Record-reference",
 		"Patient Encounter-blood_group",
+		"Patient Encounter-symptoms_and_signs",
+		"Patient Encounter-system_and_symptoms",
+		"Patient Encounter Symptom-compliant_duration",
+		"Patient Encounter Symptom-system",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",
@@ -384,6 +388,13 @@ fixtures = [
 		"Inpatient Record-procedures_section-label",
 		"Inpatient Record-lab_test_prescription-label",
 		"Inpatient Record-investigations_section-label",
+		"Patient Encounter-sb_symptoms-hidden",
+		"Patient Encounter-symptoms_in_print-hidden",
+		"Patient-risk_factors-permlevel",
+		"Patient-allergy_medical_and_surgical_history-permlevel",
+		"Patient-personal_and_social_history-permlevel",
+		"Appointment Type-main-sort_order",
+		"Appointment Type-main-sort_field",
 	)]]},
 ]
 
