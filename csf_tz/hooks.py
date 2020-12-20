@@ -278,6 +278,7 @@ fixtures = [
 		"Patient Encounter-system_and_symptoms",
 		"Patient Encounter Symptom-compliant_duration",
 		"Patient Encounter Symptom-system",
+		"Patient Appointment-nhif_patient_claim",
 	)]]},
 	{"doctype":"Property Setter", "filters": [["name", "in", (
 		"Bank Reconciliation Detail-payment_entry-columns",

@@ -22,6 +22,7 @@
   "posting_date",
   "cardno",
   "authorization_no",
+  "patient_signature",
   "section_break_8",
   "folio_id",
   "facility_code",
@@ -37,6 +38,7 @@
   "patient_type_code",
   "attendance_date",
   "patient_file_no",
+  "patient_file_section",
   "patient_file",
   "section_break_28",
   "nhif_patient_claim_disease",
@@ -88,11 +90,14 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "CardNo",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
+   "collapsible": 1,
    "fieldname": "section_break_8",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Folio Info"
   },
   {
    "fieldname": "facility_code",
@@ -174,14 +179,17 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Authorization No",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "patient_file",
-   "fieldtype": "Text",
-   "hidden": 1,
+   "fieldtype": "Markdown Editor",
    "label": "Patient File",
-   "read_only": 1
+   "no_copy": 1,
+   "print_hide": 1,
+   "read_only": 1,
+   "report_hide": 1
   },
   {
    "fieldname": "patient_file_no",
@@ -288,12 +296,25 @@
    "fieldtype": "Data",
    "label": "Serial No",
    "read_only": 1
+  },
+  {
+   "fieldname": "patient_signature",
+   "fieldtype": "Signature",
+   "label": "Patient Signature"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "patient_file_section",
+   "fieldtype": "Section Break",
+   "label": "Patient File",
+   "print_hide": 1,
+   "report_hide": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-12-19 02:12:31.404057",
+ "modified": "2020-12-19 23:42:47.064631",
  "modified_by": "Administrator",
  "module": "NHIF",
  "name": "NHIF Patient Claim",
