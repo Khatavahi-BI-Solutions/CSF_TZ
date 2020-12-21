@@ -445,22 +445,11 @@ doctype_js = {
 	"Program Enrollment": "csf_tz/program_enrollment.js",
 	"Payroll Entry": "csf_tz/payroll_entry.js",
 	"Salary Slip": "csf_tz/salary_slip.js",
-	"Patient Appointment": "nhif/api/patient_appointment.js",
-	"Patient": "nhif/api/patient.js",
-	"Sales Invoice" : [
-		"csf_tz/sales_invoice.js",
-		"nhif/api/sales_invoice.js"
-	],
-	"Patient Encounter": "nhif/api/patient_encounter.js",
-	"Lab Test": "nhif/api/lab_test.js",
-	"Healthcare Service Order": "nhif/api/service_order.js",
-	"Healthcare Insurance Company": "nhif/api/insurance_company.js",
-	"Vital Signs": "nhif/api/vital_signs.js",
-	"Inpatient Record": "nhif/api/inpatient_record.js",
+	"Sales Invoice" : "csf_tz/sales_invoice.js",
 }
 #csf_tz.nhif.api.patient_appointment
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
-inpatient_record_list_js = {"doctype" : "nhif/api/inpatient_record_list.js"}
+# inpatient_record_list_js = {"doctype" : "nhif/api/inpatient_record_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -522,7 +511,6 @@ doc_events = {
 			"csf_tz.custom_api.create_delivery_note",
 			'csf_tz.custom_api.check_submit_delivery_note',
 			'csf_tz.custom_api.make_withholding_tax_gl_entries_for_sales',
-			"csf_tz.nhif.api.sales_invoice.create_healthcare_docs",
 			],
 		'validate': [
 			'csf_tz.custom_api.check_validate_delivery_note',
@@ -578,30 +566,6 @@ doc_events = {
 	},
 	"Student Applicant": {
 		"on_update_after_submit":"csf_tz.csftz_hooks.student_applicant.make_student_applicant_fees",
-	},
-	"Patient Appointment": {
-		"validate":[
-			"csf_tz.nhif.api.patient_appointment.make_vital",
-		]
-	},
-	"Vital Signs": {
-		"on_submit":"csf_tz.nhif.api.patient_appointment.make_encounter",
-	},
-	"Patient": {
-		"validate":"csf_tz.nhif.api.patient.validate",
-	},
-	"Healthcare Insurance Claim": {
-		"before_insert":[
-			"csf_tz.nhif.api.insurance_claim.set_patient_encounter",
-			"csf_tz.nhif.api.insurance_claim.set_price",
-		]
-	},
-	"Patient Encounter": {
-		"validate":"csf_tz.nhif.api.patient_encounter.validate",
-		"on_submit":"csf_tz.nhif.api.patient_encounter.on_submit",
-	},
-	"Healthcare Service Order": {
-		"before_insert": "csf_tz.nhif.api.service_order.set_missing_values"
 	},
 }
 
